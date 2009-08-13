@@ -92,20 +92,17 @@ void Critter::parseOptions(po::variables_map vm) {
             review->addReviewer(QString::fromStdString(rev));
         }
     }
+    
+    if (vm.count("repository")) {
+        const QString repo = QString::fromStdString(vm["repository"].as<string>());
+        review->setRepository(repo);
+    }
 
     if (vm.count("changeset")) {
         readFromStdIn = false;
         const QVector<string> changesets = QVector<string>::fromStdVector(vm["changeset"].as< vector<string> >());
         foreach(string cs, changesets) {
             review->addChangeset(QString::fromStdString(cs));
-        }
-
-        if (vm.count("repository")) {
-            const QString repo = QString::fromStdString(vm["repository"].as<string>());
-            review->setRepository(repo);
-        } else {
-            error() << "No repository specified";
-            qApp->exit(1);
         }
     }
 
@@ -126,7 +123,7 @@ void Critter::parseOptions(po::variables_map vm) {
         m_crucibleConnector->createReview();
     } else if (isUpdateReview) {
 //         m_crucibleConnector->updateReview();
-        m_crucibleConnector->addReviewers();
+//        m_crucibleConnector->addReviewers();
     }
 }
 
@@ -161,6 +158,7 @@ void Critter::readStdIn(Review *review) {
     QByteArray ba;
 
     bool isPatch = false;
+    QString commitRevision = false;
     bool firstLine = true;
 
     while (!std::getline(std::cin, input_line).eof()) {
@@ -171,11 +169,20 @@ void Critter::readStdIn(Review *review) {
             }
             firstLine = false;
         }
+        if (s.startsWith("Committed")) {
+            commitRevision = QString(s);
+            commitRevision.replace(QRegExp(".*(\\d+).*"), "\\1");
+        }
         ba.append(s);
     }
 
     if (isPatch) {
         debug() << "found a patch!";
         review->addPatch(ba);
+    }
+
+    if (!commitRevision.isEmpty()) {
+        debug() << "found a commit!";
+        review->addChangeset(commitRevision);
     }
 }
