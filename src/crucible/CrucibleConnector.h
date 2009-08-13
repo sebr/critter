@@ -15,28 +15,25 @@ class CrucibleConnector : public QObject
         CrucibleConnector(QObject *parent);
 
         void setReview(Review *review) { m_review = review; }
+        void setServer(const QString &server);
 
-        void addReviewers();
         void createReview();
-        void startReview();
         void updateReview();
 
     private slots:
-        void createFailed(QNetworkReply *reply);
-        void createSuccessful(QNetworkReply *reply);
-
-        void reviewersFailed(QNetworkReply *reply);
-        void reviewersSuccessful(QNetworkReply *reply);
-
-        void startFailed(QNetworkReply *reply);
-        void startSuccessful(QNetworkReply *reply);
+        void updateReviewContent();
 
     private:
+        void addReviewers();
+        void startReview();
+        void addChangesets();
+        void addPatches();
+
         RestCommunicator *createCommunicator();
 
         Review *m_review;
 
-        QString m_server;
+        QUrl m_server;
         QString m_user;
         QString m_password;
 };

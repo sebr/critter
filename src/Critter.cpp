@@ -42,6 +42,12 @@ void Critter::parseOptions(po::variables_map vm) {
         qApp->exit(1);
     }
 
+    if (vm.count("server")) {
+        const QString server = QString::fromStdString(vm["server"].as<string>());
+        debug() << "server:" << server;
+        m_crucibleConnector->setServer(server);
+    }
+
     Review *review = new Review(this);
 
     if (isCreateReview) {
@@ -122,8 +128,7 @@ void Critter::parseOptions(po::variables_map vm) {
     if (isCreateReview) {
         m_crucibleConnector->createReview();
     } else if (isUpdateReview) {
-//         m_crucibleConnector->updateReview();
-//        m_crucibleConnector->addReviewers();
+        m_crucibleConnector->updateReview();
     }
 }
 

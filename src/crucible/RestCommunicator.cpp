@@ -18,7 +18,7 @@ RestCommunicator::RestCommunicator(QObject *parent)
             this, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
 }
 
-void RestCommunicator::setServer( const QString &server )
+void RestCommunicator::setServer( const QUrl &server )
 {
     m_server = server;
 }
@@ -34,7 +34,7 @@ void RestCommunicator::setPassword( const QString &password )
 }
 
 inline QUrl RestCommunicator::apiUrl(const QString &path) const {
-    QUrl url(m_server + "/rest-service/reviews-v1/" + path);
+    QUrl url(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service/reviews-v1/" + path);
     return url;
 }
 
@@ -63,6 +63,7 @@ void RestCommunicator::postTextData(const QString &path, const QString &data) {
 }
 
 void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
+    DEBUG_BLOCK
     QNetworkRequest request(apiUrl(path));
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);

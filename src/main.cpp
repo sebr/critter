@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 
     po::options_description config("Configuration options");
     config.add_options()
+        ("server,S", po::value<string>(), "crucible server")
         ("create-review,c", "creating a review")
         ("start,s", "start the review")
         ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")

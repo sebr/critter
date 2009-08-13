@@ -10,6 +10,9 @@ class Review : public QObject
         Review(QObject *parent);
 
         QByteArray createData() const;
+        QByteArray patchData(const QByteArray &patch) const;
+        QByteArray changesetsData() const;
+        QByteArray uploadData(const QByteArray &upload) const;
 
         QString id() const { return m_id; }
         void setId(const QString &id) { m_id = id; }
@@ -47,12 +50,15 @@ class Review : public QObject
 
         QStringList changesets() const { return m_changesets; }
         void addChangeset(const QString &cs) { m_changesets << cs; }
+        bool hasChangesets() const { return !m_changesets.isEmpty(); }
 
         QList<QByteArray> patches() const { return m_patches; }
         void addPatch(const QByteArray &data) { m_patches << data; }
+        bool hasPatches() const { return !m_patches.isEmpty(); }
 
         QList<QByteArray> uploads() const { return m_uploads; }
         void addUpload(const QByteArray &data) { m_uploads << data; }
+        bool hasUploads() const { return !m_uploads.isEmpty(); }
 
     private:
         QString m_id;
