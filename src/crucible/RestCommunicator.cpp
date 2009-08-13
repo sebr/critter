@@ -1,0 +1,79 @@
+#include "RestCommunicator.h"
+#include "../Debug.h"
+
+#include <QAuthenticator>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QXmlInputSource>
+
+RestCommunicator::RestCommunicator(QObject *parent)
+    : QObject(parent)
+    , m_manager(new QNetworkAccessManager(this))
+{
+    connect(m_manager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(replyFinished(QNetworkReply*)));
+
+    connect(m_manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
+            this, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
+}
+
+void RestCommunicator::setServer( const QString &server )
+{
+    m_server = server;
+}
+
+void RestCommunicator::setUser( const QString &username )
+{
+    m_username = username;
+}
+
+void RestCommunicator::setPassword( const QString &password )
+{
+    m_password = password;
+}
+
+inline QUrl RestCommunicator::apiUrl(const QString &path) const {
+    QUrl url(m_server + "/rest-service/reviews-v1/" + path);
+    url.setUserName(m_username);
+    url.setPassword(m_password);
+    return url;
+}
+
+void RestCommunicator::replyFinished(QNetworkReply *reply) {
+    DEBUG_BLOCK
+
+    if (reply->error()) {
+        error() << "Response error:" << reply->errorString();
+        emit callFailed(reply->error());
+    } else {
+        emit callSuccessful();
+    }
+
+//    if (reply->bytesAvailable() > 0) {
+//        QXmlSimpleReader xml;
+//        QXmlInputSource source(reply);
+//        bool success = xml.parse(&source, true);
+//    }
+}
+
+bool RestCommunicator::testConnection()
+{
+    m_manager->get(QNetworkRequest(apiUrl()));
+    return true;
+}
+
+void RestCommunicator::postData(const QByteArray &data, const QString &path) {
+    QNetworkRequest request(apiUrl(path));
+    m_manager->post(request, data);
+}
+
+void RestCommunicator::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator) {
+    DEBUG_BLOCK
+    Q_UNUSED(reply);
+
+    authenticator->setUser(m_username);
+    authenticator->setPassword(m_password);
+}
+
+//#include "RestCommunicator.moc"
