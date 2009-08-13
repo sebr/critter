@@ -96,7 +96,7 @@ namespace Debug
 
     inline bool debugEnabled()
     {
-        return enabled;
+        return true;
     }
 
     inline QDebug dbgstream()

@@ -8,7 +8,7 @@
 
 class QAuthenticator;
 class QNetworkAccessManager;
-
+class Review;
 
 class RestCommunicator : public QObject
 {
@@ -25,7 +25,9 @@ class RestCommunicator : public QObject
 
         bool testConnection();
 
-        void postData(const QByteArray &data, const QString &path = QString());
+        void post(const QString &path);
+        void postTextData(const QString &path, const QString &data);
+        void postData(const QString &path, const QByteArray &data = QByteArray(), const QString &contentType = "application/xml");
 
     signals:
         void callFailed(QNetworkReply*);

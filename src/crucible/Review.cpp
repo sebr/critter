@@ -41,19 +41,25 @@ QByteArray Review::createData() const {
 
     xml.writeEndElement(); // reviewData
 
-    xml.writeStartElement("changesets");
-    xml.writeTextElement("repository", m_repository);
-    foreach(const QString cs, m_changesets) {
-        xml.writeStartElement("changesetData");
-        xml.writeTextElement("id", cs);
-        xml.writeEndElement();
+    if (!m_changesets.isEmpty())
+    {
+        xml.writeStartElement("changesets");
+        xml.writeTextElement("repository", m_repository);
+        foreach(const QString cs, m_changesets) {
+            xml.writeStartElement("changesetData");
+            xml.writeTextElement("id", cs);
+            xml.writeEndElement();
+        }
+        xml.writeEndElement(); // changesets
     }
-    xml.writeEndElement(); // changesets
 
-    foreach(const QByteArray patch, m_patches) {
-        xml.writeStartElement("patch");
-        xml.writeCDATA(patch);
-        xml.writeEndElement(); // patch
+
+    if (!m_patches.isEmpty()) {
+        foreach(const QByteArray patch, m_patches) {
+            xml.writeStartElement("patch");
+            xml.writeCDATA(patch);
+            xml.writeEndElement(); // patch
+        }
     }
 
     xml.writeEndElement(); // createReview

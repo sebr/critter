@@ -42,17 +42,10 @@ void RestCommunicator::replyFinished(QNetworkReply *reply) {
     DEBUG_BLOCK
 
     if (reply->error()) {
-        error() << "Response error:" << reply->errorString();
         emit callFailed(reply);
     } else {
         emit callSuccessful(reply);
     }
-
-//    if (reply->bytesAvailable() > 0) {
-//        QXmlSimpleReader xml;
-//        QXmlInputSource source(reply);
-//        bool success = xml.parse(&source, true);
-//    }
 }
 
 bool RestCommunicator::testConnection()
@@ -61,9 +54,18 @@ bool RestCommunicator::testConnection()
     return true;
 }
 
-void RestCommunicator::postData(const QByteArray &data, const QString &path) {
+void RestCommunicator::post(const QString &path) {
+    postData(path);
+}
+
+void RestCommunicator::postTextData(const QString &path, const QString &data) {
+    postData(path, data.toAscii());
+}
+
+void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
     QNetworkRequest request(apiUrl(path));
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/xml");
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
 
     QString auth(m_username + ":" + m_password);
     request.setRawHeader("Authorization", "Basic " + auth.toAscii().toBase64());

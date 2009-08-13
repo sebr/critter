@@ -6,7 +6,8 @@
 #include <QSettings>
 
 CrucibleConnector::CrucibleConnector( QObject *parent )
-    : QObject( parent )
+    : QObject(parent)
+    , m_review(0)
 {
     QSettings settings;
 
@@ -28,25 +29,30 @@ RestCommunicator * CrucibleConnector::createCommunicator() {
 }
 
 void CrucibleConnector::createFailed(QNetworkReply *reply) {
-    debug() << "Could not create review:" << reply->errorString();
+    debug() << "Could not create review at" << m_server << ":" << reply->errorString();
 }
 
 void CrucibleConnector::createSuccessful(QNetworkReply *reply) {
     QString location = reply->header(QNetworkRequest::LocationHeader).toUrl().toString();
     QString url = reply->url().toString();
 
-    QString id = location.remove(url);
+    QString id = location.remove(url).mid(1);
+    m_review->setId(id);
 
-    QString reviewUrl = m_server + "/cru" + id;
+    debug() << "id:" << id;
+    QString reviewUrl = m_server + "/cru/" + id;
 
     qDebug() << "Created review:" << reviewUrl;
+
+    if (m_review->shouldStart()) {
+        startReview();
+    }
+    if (m_review->hasReviewers()) {
+        addReviewers();
+    }
 }
 
-bool CrucibleConnector::testConnection() const {
-    return true;
-}
-
-void CrucibleConnector::createReview(const Review *review) {
+void CrucibleConnector::createReview() {
     RestCommunicator *communicator = createCommunicator();
 
     connect(communicator, SIGNAL(callSuccessful(QNetworkReply*)),
@@ -54,11 +60,11 @@ void CrucibleConnector::createReview(const Review *review) {
     connect(communicator, SIGNAL(callFailed(QNetworkReply*)),
             this, SLOT(createFailed(QNetworkReply*)));
 
-    communicator->postData(review->createData());
+    communicator->postData(QString(), m_review->createData());
 }
 
-void CrucibleConnector::updateReview(const Review *review) {
-    if (review->id().isEmpty()) {
+void CrucibleConnector::updateReview() {
+    if (m_review->id().isEmpty()) {
         error() << "Can't update a review without a PermaId";
         return;
     }
@@ -70,8 +76,58 @@ void CrucibleConnector::updateReview(const Review *review) {
             this, SLOT(updateFailed(QNetworkReply*)));
 
     // First, add the changesets
-//    communicator->postData(review->data(), review->id() + "/addChangeset");
+//    communicator->postData(m_review->data(), m_review->id() + "/addChangeset");
 
     // Then, the patches
+}
+
+void CrucibleConnector::startReview() {
+    DEBUG_BLOCK
+    if (m_review->id().isEmpty()) {
+        error() << "Can't start a review without a PermaId";
+        return;
+    }
+    RestCommunicator *communicator = createCommunicator();
+
+    connect(communicator, SIGNAL(callSuccessful(QNetworkReply*)),
+            this, SLOT(startSuccessful(QNetworkReply*)));
+    connect(communicator, SIGNAL(callFailed(QNetworkReply*)),
+            this, SLOT(startFailed(QNetworkReply*)));
+
+    communicator->post(m_review->id() + "/transition?action=action:approveReview");
+}
+
+void CrucibleConnector::startFailed(QNetworkReply *reply) {
+    debug() << "Could not start review at" << m_server << ":" << reply->errorString();
+}
+
+void CrucibleConnector::startSuccessful(QNetworkReply *reply) {
+    Q_UNUSED(reply);
+    debug() << "review started";
+}
+
+void CrucibleConnector::addReviewers() {
+    DEBUG_BLOCK
+    if (m_review->id().isEmpty()) {
+        error() << "Can't update a review without a PermaId";
+        return;
+    }
+    RestCommunicator *communicator = createCommunicator();
+
+    connect(communicator, SIGNAL(callSuccessful(QNetworkReply*)),
+            this, SLOT(reviewersSuccessful(QNetworkReply*)));
+    connect(communicator, SIGNAL(callFailed(QNetworkReply*)),
+            this, SLOT(reviewersFailed(QNetworkReply*)));
+
+    communicator->postTextData(m_review->id() + "/reviewers", m_review->reviewers().join(","));
+}
+
+void CrucibleConnector::reviewersFailed(QNetworkReply *reply) {
+    debug() << "Could not add reviewers at" << m_server << ":" << reply->errorString();
+}
+
+void CrucibleConnector::reviewersSuccessful(QNetworkReply *reply) {
+    Q_UNUSED(reply);
+    debug() << "reviewers added";
 }
 

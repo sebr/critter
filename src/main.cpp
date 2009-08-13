@@ -28,14 +28,12 @@ int main(int argc, char *argv[])
 
     po::options_description config("Configuration options");
     config.add_options()
-//        ("test-connection,t", "test and debug server connection")
         ("create-review,c", "creating a review")
-        ("edit-review,e", "update an existing review")
-        ("start-review,s", "start the review when creating it")
+        ("start,s", "start the review")
         ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
         ("upload,u", po::value< vector<string> >()->multitoken(), "files to upload to the specified review")
         ("patch,p", po::value<string>(), "patch to upload to the specified review")
-        ("review,r", po::value<string>(), "the review to update. if not specified, a new review is created")
+        ("update-review,U", po::value<string>(), "the review to update. if not specified, a new review is created")
         ;
 
     po::options_description review("Review options");
@@ -47,6 +45,7 @@ int main(int argc, char *argv[])
         ("moderator", po::value<string>(), "when creating, the moderator of the review (if not set, defaults to author)")
         ("project", po::value<string>(), "when creating, the project to add the review to. Defaults to \"CR\"")
         ("repository", po::value<string>(), "the repository for changesets")
+        ("reviewers", po::value< vector<string> >()->multitoken(), "list of reviewers for the review")
         ;
 
     po::options_description visible("Allowed options");
@@ -56,7 +55,7 @@ int main(int argc, char *argv[])
     po::store(po::parse_command_line(argc, argv, visible), vm);
     po::notify(vm);
 
-    if (vm.count("help")) {
+    if (argc == 1 || vm.count("help")) {
         std::cout << visible << "\n";
         a.exit(1);
         return 1;

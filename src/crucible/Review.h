@@ -2,6 +2,7 @@
 #define REVIEW_H
 
 #include <QObject>
+#include <QStringList>
 
 class Review : public QObject
 {
@@ -25,6 +26,9 @@ class Review : public QObject
         bool allowReviewersToJoin() const { return m_allowReviewersToJoin; }
         void setAllowReviewersToJoin(const bool allow) { m_allowReviewersToJoin = allow; }
 
+        bool shouldStart() const { return m_shouldStart; }
+        void setShouldStart(const bool start) { m_shouldStart = start; }
+
         QString author() const { return m_author; }
         void setAuthor(const QString &author) { m_author = author; }
 
@@ -37,10 +41,11 @@ class Review : public QObject
         QString repository() const { return m_repository; }
         void setRepository(const QString &repository) { m_repository = repository; }
 
-        QList<QString> reviewers() const { return m_reviewers; }
+        QStringList reviewers() const { return m_reviewers; }
         void addReviewer(const QString &reviewer) { m_reviewers << reviewer; }
+        bool hasReviewers() const { return !m_reviewers.isEmpty(); }
 
-        QList<QString> changesets() const { return m_changesets; }
+        QStringList changesets() const { return m_changesets; }
         void addChangeset(const QString &cs) { m_changesets << cs; }
 
         QList<QByteArray> patches() const { return m_patches; }
@@ -56,14 +61,15 @@ class Review : public QObject
         QString m_name;
         QString m_description;
         bool    m_allowReviewersToJoin;
+        bool    m_shouldStart;
 
         QString m_author;
         QString m_moderator;
         QString m_creator;
 
         QString           m_repository;
-        QList<QString>    m_reviewers;
-        QList<QString>    m_changesets;
+        QStringList       m_reviewers;
+        QStringList       m_changesets;
         QList<QByteArray> m_patches;
         QList<QByteArray> m_uploads;
 };

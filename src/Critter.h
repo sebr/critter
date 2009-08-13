@@ -8,6 +8,7 @@
 namespace po = boost::program_options;
 
 class CrucibleConnector;
+class Review;
 
 class Critter : public QObject
 {
@@ -18,7 +19,7 @@ class Critter : public QObject
 
     private:
         QByteArray loadPatch(const QString &filename) const;
-        void readStdIn();
+        void readStdIn(Review *review);
         void testConnection();
 
         CrucibleConnector *m_crucibleConnector;
