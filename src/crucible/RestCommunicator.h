@@ -18,19 +18,18 @@ class RestCommunicator : public QObject
         RestCommunicator(QObject *parent);
         virtual ~RestCommunicator() {}
 
+        QString server() const { return m_server; }
         void setServer( const QString &server );
         void setUser( const QString &username );
         void setPassword( const QString &password );
 
         bool testConnection();
 
-        void postData(const QByteArray &data, const QString &path);
+        void postData(const QByteArray &data, const QString &path = QString());
 
     signals:
-//        void xmlError(QXmlSimpleReader);
-//        void xmlReceived(QXmlSimpleReader);
-        void callFailed(QNetworkReply::NetworkError);
-        void callSuccessful();
+        void callFailed(QNetworkReply*);
+        void callSuccessful(QNetworkReply*);
 
     private slots:
         void replyFinished(QNetworkReply *reply);

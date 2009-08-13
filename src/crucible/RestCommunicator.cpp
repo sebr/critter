@@ -35,8 +35,6 @@ void RestCommunicator::setPassword( const QString &password )
 
 inline QUrl RestCommunicator::apiUrl(const QString &path) const {
     QUrl url(m_server + "/rest-service/reviews-v1/" + path);
-    url.setUserName(m_username);
-    url.setPassword(m_password);
     return url;
 }
 
@@ -45,9 +43,9 @@ void RestCommunicator::replyFinished(QNetworkReply *reply) {
 
     if (reply->error()) {
         error() << "Response error:" << reply->errorString();
-        emit callFailed(reply->error());
+        emit callFailed(reply);
     } else {
-        emit callSuccessful();
+        emit callSuccessful(reply);
     }
 
 //    if (reply->bytesAvailable() > 0) {
@@ -65,6 +63,11 @@ bool RestCommunicator::testConnection()
 
 void RestCommunicator::postData(const QByteArray &data, const QString &path) {
     QNetworkRequest request(apiUrl(path));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/xml");
+
+    QString auth(m_username + ":" + m_password);
+    request.setRawHeader("Authorization", "Basic " + auth.toAscii().toBase64());
+
     m_manager->post(request, data);
 }
 

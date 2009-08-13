@@ -32,17 +32,19 @@ int main(int argc, char *argv[])
         ("create-review,c", "creating a review")
         ("edit-review,e", "update an existing review")
         ("start-review,s", "start the review when creating it")
-        ("changeset,cs", po::value<string>()->multitoken(), "create a review from the specified changeset ids")
-        ("upload,u", po::value<string>()->multitoken(), "files to upload to the specified review")
-        ("patch,p", po::value<string>()->multitoken(), "patches to upload to the specified review")
+        ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
+        ("upload,u", po::value< vector<string> >()->multitoken(), "files to upload to the specified review")
+        ("patch,p", po::value< vector<string> >()->multitoken(), "patches to upload to the specified review")
         ("review,r", po::value<string>(), "the review to update. if not specified, a new review is created")
         ;
 
     po::options_description review("Review options");
     review.add_options()
         ("author", po::value<string>(), "when creating, the author of the review")
-        ("creator", po::value<string>()->zero_tokens(), "when creating, the creator of the review (if not set, defaults to author)")
-        ("moderator", po::value<string>()->zero_tokens(), "when creating, the moderator of the review (if not set, defaults to author)")
+        ("creator", po::value<string>(), "when creating, the creator of the review (if not set, defaults to author)")
+        ("moderator", po::value<string>(), "when creating, the moderator of the review (if not set, defaults to author)")
+        ("project", po::value<string>(), "when creating, the project to add the review to. Defaults to \"CR\"")
+        ("repository", po::value<string>(), "the repository for changesets")
         ;
 
     po::options_description visible("Allowed options");

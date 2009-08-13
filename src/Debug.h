@@ -103,7 +103,7 @@ namespace Debug
     {
         return qDebug();
     }
- 
+
     #undef qOApp
 
     #ifndef DEBUG_PREFIX
@@ -120,7 +120,6 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-        
     static inline QDebug debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( qApp->applicationName() + ": " + ind + APP_PREFIX ); }
     static inline QDebug warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( qApp->applicationName() + ": " + ind + APP_PREFIX + " [WARNING!]" ); }
     static inline QDebug error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( qApp->applicationName() + ": " + ind + APP_PREFIX + " [ERROR!]" ); }
