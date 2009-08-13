@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
 class CrucibleConnector;
 
 class Critter : public QObject
@@ -10,10 +14,12 @@ class Critter : public QObject
     public:
         Critter(QObject *parent = 0);
 
+        void parseOptions(po::variables_map vm);
+
+    private:
         void readStdIn();
         void testConnection();
 
-    private:
         CrucibleConnector *m_crucibleConnector;
 };
 
