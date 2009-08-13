@@ -50,6 +50,12 @@ QByteArray Review::createData() const {
     }
     xml.writeEndElement(); // changesets
 
+    foreach(const QByteArray patch, m_patches) {
+        xml.writeStartElement("patch");
+        xml.writeCDATA(patch);
+        xml.writeEndElement(); // patch
+    }
+
     xml.writeEndElement(); // createReview
     xml.writeEndDocument();
 

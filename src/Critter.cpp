@@ -5,6 +5,10 @@
 #include "crucible/CrucibleConnector.h"
 #include "crucible/Review.h"
 
+#include <QDir>
+#include <QFileInfo>
+#include <QFile>
+
 #include <iostream>
 
 namespace po = boost::program_options;
@@ -45,6 +49,16 @@ void Critter::parseOptions(po::variables_map vm) {
             review->setId(id);
         }
 
+        if (vm.count("title")) {
+            const QString name = QString::fromStdString(vm["title"].as<string>());
+            review->setName(name);
+        }
+
+        if (vm.count("objectives")) {
+            const QString objectives = QString::fromStdString(vm["objectives"].as<string>());
+            review->setDescription(objectives);
+        }
+
         if (vm.count("project")) {
             const QString project = QString::fromStdString(vm["project"].as<string>());
             review->setProject(project);
@@ -76,10 +90,18 @@ void Critter::parseOptions(po::variables_map vm) {
             }
         }
 
+        if (vm.count("patch")) {
+            const QString &patchFile = QString::fromStdString(vm["patch"].as<string>());
+            QByteArray patchData = loadPatch(patchFile);
+            if (!patchData.isEmpty()) {
+                review->addPatch(patchData);
+            }
+        }
+
         if (isCreateReview) {
             m_crucibleConnector->createReview(review);
         } else if (isUpdateReview) {
-            m_crucibleConnector->updateReview(review);
+//            m_crucibleConnector->updateReview(review);
         }
     }
 }
@@ -87,6 +109,25 @@ void Critter::parseOptions(po::variables_map vm) {
 void Critter::testConnection() {
     DEBUG_BLOCK
     m_crucibleConnector->testConnection();
+}
+
+QByteArray Critter::loadPatch(const QString &filename) const
+{
+    DEBUG_BLOCK
+
+    QFileInfo fi(QDir::current(), filename);
+
+    debug() << "loading patch data from" << fi.filePath();
+
+    QFile patch(fi.filePath());
+
+    bool open = patch.open(QIODevice::ReadOnly);
+    if (!open) {
+        error() << "Could not open patch" << fi.filePath() << "Check file permissions";
+        return QByteArray();
+    }
+
+    return patch.readAll();
 }
 
 void Critter::readStdIn() {

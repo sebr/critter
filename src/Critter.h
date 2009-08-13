@@ -17,6 +17,7 @@ class Critter : public QObject
         void parseOptions(po::variables_map vm);
 
     private:
+        QByteArray loadPatch(const QString &filename) const;
         void readStdIn();
         void testConnection();
 
