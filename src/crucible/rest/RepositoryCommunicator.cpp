@@ -7,6 +7,6 @@ RepositoryCommunicator::RepositoryCommunicator(QObject *parent)
 }
 
 QUrl RepositoryCommunicator::apiUrl(const QString &path) const {
-    QUrl url(m_server.toString() + "/rest-service/repositories-v1/" + path);
+    QUrl
     return url;
 }

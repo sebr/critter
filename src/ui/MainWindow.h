@@ -9,9 +9,11 @@
 namespace Ui {
     class MainWindow;
 }
+
 class CrucibleConnectorBase;
 class Project;
 class Repository;
+class User;
 
 class MainWindow : public QMainWindow {
         Q_OBJECT
@@ -26,6 +28,7 @@ class MainWindow : public QMainWindow {
     private slots:
         void loadProjects(QList<Project*> projects);
         void loadRepositories(QList<Repository*> repos);
+        void loadUsers(QList<User*> users);
 
     private:
         void loadData();

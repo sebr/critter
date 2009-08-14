@@ -7,6 +7,6 @@ ReviewsCommunicator::ReviewsCommunicator(QObject *parent)
 }
 
 QUrl ReviewsCommunicator::apiUrl(const QString &path) const {
-    QUrl url(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service/reviews-v1/" + path);
+    QUrl
     return url;
 }

@@ -1,6 +1,6 @@
 #include "../Debug.h"
 #include "CrucibleConnector.h"
-#include "rest/ReviewsCommunicator.h"
+#include "rest/Communicators.h"
 #include "Review.h"
 
 #include "actions/reviews/AddChangesetsAction.h"

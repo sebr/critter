@@ -4,11 +4,16 @@
 #include "../Debug.h"
 #include "../crucible/Project.h"
 #include "../crucible/Repository.h"
+#include "../crucible/User.h"
 #include "../crucible/CrucibleConnectorBase.h"
 #include "../crucible/actions/projects/LoadProjectsAction.h"
 #include "../crucible/actions/repositories/LoadRepositoriesAction.h"
-#include "../crucible/rest/ProjectsCommunicator.h"
-#include "../crucible/rest/RepositoryCommunicator.h"
+#include "../crucible/actions/users/LoadUsersAction.h"
+#include "../crucible/rest/Communicators.h"
+
+Q_DECLARE_METATYPE(Project*)
+Q_DECLARE_METATYPE(Repository*)
+Q_DECLARE_METATYPE(User*)
 
 MainWindow::MainWindow(CrucibleConnectorBase *connector, QWidget *parent) :
     QMainWindow(parent)
@@ -61,6 +66,15 @@ void MainWindow::loadData() {
     connect(lra, SIGNAL(repositoriesReceived(QList<Repository*>)), this, SLOT(loadRepositories(QList<Repository*>)));
     lra->run();
 
+    UsersCommunicator *uc = new UsersCommunicator(this);
+    uc->setServer(m_connector->server());
+    uc->setUser(m_connector->user());
+    uc->setPassword(m_connector->password());
+
+    LoadUsersAction *lua = new LoadUsersAction(uc, this);
+    connect(lua, SIGNAL(usersReceived(QList<User*>)), this, SLOT(loadUsers(QList<User*>)));
+    lua->run();
+
 }
 
 void MainWindow::loadProjects(QList<Project*> projects) {
@@ -76,7 +90,8 @@ void MainWindow::loadProjects(QList<Project*> projects) {
     }
 
     foreach(Project *p, projects) {
-        m_ui->project->addItem(p->key() + ": " + p->name());
+        QVariant data; data.setValue(p);
+        m_ui->project->addItem(p->key() + ": " + p->name(), data);
     }
 }
 
@@ -93,6 +108,37 @@ void MainWindow::loadRepositories(QList<Repository*> repos) {
     }
 
     foreach(Repository *r, repos) {
-        m_ui->repository->addItem(r->name());
+        QVariant data; data.setValue(r);
+        m_ui->repository->addItem(r->name(), data);
+    }
+}
+
+void MainWindow::loadUsers(QList<User*> users) {
+    DEBUG_BLOCK
+
+    m_ui->moderator->clear();
+    m_ui->author->clear();
+
+    if (users.isEmpty()) {
+        m_ui->moderator->addItem("No users found");
+        m_ui->moderator->setDisabled(true);
+        m_ui->author->addItem("No users found");
+        m_ui->author->setDisabled(true);
+    } else {
+        m_ui->moderator->setDisabled(false);
+        m_ui->author->setDisabled(false);
+    }
+
+    int i = 0;
+    foreach(User *u, users) {
+        QVariant data; data.setValue(u);
+        m_ui->moderator->insertItem(i, u->displayName(), data);
+        m_ui->author->insertItem(i, u->displayName(), data);
+
+        if (u->userName() == m_connector->user()) {
+            m_ui->moderator->setCurrentIndex(i);
+            m_ui->author->setCurrentIndex(i);
+        }
+        i++;
     }
 }

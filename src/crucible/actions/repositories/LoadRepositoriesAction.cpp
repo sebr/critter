@@ -30,8 +30,6 @@ void LoadRepositoriesAction::callSuccessful(QNetworkReply *reply) {
 
     QDomDocument doc;
 
-    debug() << data;
-
     doc.setContent(data);
     QDomNodeList nodeList = doc.elementsByTagName("repoData");
     for (uint i = 0; i < nodeList.length(); ++i) {

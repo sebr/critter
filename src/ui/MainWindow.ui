@@ -80,25 +80,18 @@
        </layout>
       </item>
       <item>
-       <widget class="QListView" name="create"/>
+       <widget class="QListView" name="reviewers"/>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QTextEdit" name="textEdit"/>
+     <widget class="QTextEdit" name="objectives"/>
     </item>
     <item>
      <widget class="QTreeView" name="contents"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QPushButton" name="pushButton_2">
-        <property name="text">
-         <string>Quit</string>
-        </property>
-       </widget>
-      </item>
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">

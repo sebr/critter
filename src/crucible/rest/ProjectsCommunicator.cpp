@@ -6,7 +6,4 @@ ProjectsCommunicator::ProjectsCommunicator(QObject *parent)
 {
 }
 
-QUrl ProjectsCommunicator::apiUrl(const QString &path) const {
-    QUrl url(m_server.toString() + "/rest-service/projects-v1/" + path);
-    return url;
-}
+QUrl ProjectsCommunicator::apiUrl(const QString &path) const

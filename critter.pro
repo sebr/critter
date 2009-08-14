@@ -12,7 +12,6 @@ SOURCES += src/main.cpp \
     src/Critter.cpp \
     src/crucible/CrucibleConnector.cpp \
     src/crucible/rest/RestCommunicator.cpp \
-    src/crucible/rest/ReviewsCommunicator.cpp \
     src/crucible/Review.cpp \
     src/crucible/actions/AbstractAction.cpp \
     src/crucible/actions/reviews/AddReviewersAction.cpp \
@@ -21,15 +20,13 @@ SOURCES += src/main.cpp \
     src/crucible/actions/reviews/AddChangesetsAction.cpp \
     src/crucible/actions/reviews/AddPatchesAction.cpp \
     src/ui/MainWindow.cpp \
-    src/crucible/rest/ProjectsCommunicator.cpp \
     src/crucible/actions/projects/LoadProjectsAction.cpp \
-    src/crucible/rest/RepositoryCommunicator.cpp \
-    src/crucible/actions/repositories/LoadRepositoriesAction.cpp
+    src/crucible/actions/repositories/LoadRepositoriesAction.cpp \
+    src/crucible/actions/users/LoadUsersAction.cpp
 HEADERS += src/Critter.h \
     src/Debug.h \
     src/crucible/CrucibleConnector.h \
     src/crucible/rest/RestCommunicator.h \
-    src/crucible/rest/ReviewsCommunicator.h \
     src/crucible/Review.h \
     src/crucible/actions/AbstractAction.h \
     src/crucible/actions/reviews/AddReviewersAction.h \
@@ -41,11 +38,12 @@ HEADERS += src/Critter.h \
     src/crucible/actions/reviews/AbstractReviewAction.h \
     src/crucible/actions/repositories/LoadRepositoriesAction.h \
     src/ui/MainWindow.h \
-    src/crucible/rest/ProjectsCommunicator.h \
-    src/crucible/rest/RepositoryCommunicator.h \
     src/crucible/CrucibleConnectorBase.h \
     src/crucible/Project.h \
-    src/crucible/Repository.h
+    src/crucible/Repository.h \
+    src/crucible/rest/Communicators.h \
+    src/crucible/actions/users/LoadUsersAction.h \
+    src/crucible/User.h
 LIBS += -lboost_program_options
 MOC_DIR = build
 OBJECTS_DIR = build
