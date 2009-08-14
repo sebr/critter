@@ -1,7 +1,7 @@
 #include "AddChangesetsAction.h"
-#include "../Review.h"
-#include "../RestCommunicator.h"
-#include "../../Debug.h"
+#include "../../Review.h"
+#include "../../rest/RestCommunicator.h"
+#include "../../../Debug.h"
 
 #include <QNetworkReply>
 

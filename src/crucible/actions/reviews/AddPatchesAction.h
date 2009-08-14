@@ -1,19 +1,19 @@
 #ifndef ADDPATCHESACTION_H
 #define ADDPATCHESACTION_H
 
-#include "AbstractAction.h"
+#include "AbstractReviewAction.h"
 #include <QStack>
 
 class QNetworkReply;
 
-class AddPatchesAction : public AbstractAction
+class AddPatchesAction : public AbstractReviewAction
 {
     Q_OBJECT
 
     public:
         AddPatchesAction(const QUrl &server, Review *review,
                         RestCommunicator *communicator, QObject *parent)
-            : AbstractAction(server, review, communicator, parent) {}
+            : AbstractReviewAction(server, review, communicator, parent) {}
         virtual void run();
 
     signals:

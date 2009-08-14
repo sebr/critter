@@ -5,6 +5,7 @@
 #include <QUrl>
 
 class RestCommunicator;
+class Review;
 class QNetworkReply;
 
 class AbstractAction : public QObject

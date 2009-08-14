@@ -1,5 +1,5 @@
 #include "RestCommunicator.h"
-#include "../Debug.h"
+#include "../../Debug.h"
 
 #include <QAuthenticator>
 #include <QNetworkAccessManager>
@@ -38,9 +38,8 @@ inline QUrl RestCommunicator::apiUrl(const QString &path) const {
     return url;
 }
 
-inline QUrl RestCommunicator::feApiUrl(const QString &path) const {
-    QUrl url(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/" + path);
-    return url;
+void RestCommunicator::replyFinishedSlot(QNetworkReply *reply) {
+    replyFinished(reply);
 }
 
 void RestCommunicator::replyFinished(QNetworkReply *reply) {
@@ -69,14 +68,26 @@ void RestCommunicator::postTextData(const QString &path, const QString &data) {
 
 void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
     DEBUG_BLOCK
+    QNetworkRequest request = authenticatedRequest(path, contentType);
+
+    m_manager->post(request, data);
+}
+
+void RestCommunicator::get(const QString &path) {
+    DEBUG_BLOCK
+    QNetworkRequest request = authenticatedRequest(path);
+
+    m_manager->get(request);
+}
+
+QNetworkRequest RestCommunicator::authenticatedRequest(const QString &path, const QString &contentType) const {
     QNetworkRequest request(apiUrl(path));
 
     request.setHeader(QNetworkRequest::ContentTypeHeader, contentType);
 
     QString auth(m_username + ":" + m_password);
     request.setRawHeader("Authorization", "Basic " + auth.toAscii().toBase64());
-
-    m_manager->post(request, data);
+    return request;
 }
 
 void RestCommunicator::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator) {
@@ -87,4 +98,3 @@ void RestCommunicator::authenticationRequired(QNetworkReply *reply, QAuthenticat
     authenticator->setPassword(m_password);
 }
 
-//#include "RestCommunicator.moc"

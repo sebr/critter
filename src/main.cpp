@@ -1,8 +1,10 @@
 
 #include "Critter.h"
+#include "ui/MainWindow.h"
 
-#include <QDebug>
+#include <QApplication>
 #include <QCoreApplication>
+#include <QDebug>
 
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -12,7 +14,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QApplication a(argc, argv);
 
     QCoreApplication::setOrganizationName("Atlassian");
     QCoreApplication::setOrganizationDomain("atlassian.com");
@@ -56,14 +58,19 @@ int main(int argc, char *argv[])
     po::store(po::parse_command_line(argc, argv, visible), vm);
     po::notify(vm);
 
-    if (argc == 1 || vm.count("help")) {
+    if (vm.count("help")) {
         std::cout << visible << "\n";
         a.exit(1);
         return 1;
     }
 
-    Critter *critter = new Critter();
-    critter->parseOptions(vm);
+    if (argc == 1) {
+        MainWindow *w = new MainWindow();
+        w->show();
+    } else {
+        Critter *critter = new Critter();
+        critter->parseOptions(vm);
+    }
 
     return a.exec();
 }

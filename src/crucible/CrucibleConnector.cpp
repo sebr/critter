@@ -1,13 +1,13 @@
 #include "../Debug.h"
 #include "CrucibleConnector.h"
-#include "RestCommunicator.h"
+#include "rest/ReviewsCommunicator.h"
 #include "Review.h"
 
-#include "actions/AddChangesetsAction.h"
-#include "actions/AddPatchesAction.h"
-#include "actions/AddReviewersAction.h"
-#include "actions/CreateReviewAction.h"
-#include "actions/StartReviewAction.h"
+#include "actions/reviews/AddChangesetsAction.h"
+#include "actions/reviews/AddPatchesAction.h"
+#include "actions/reviews/AddReviewersAction.h"
+#include "actions/reviews/CreateReviewAction.h"
+#include "actions/reviews/StartReviewAction.h"
 
 #include <QSettings>
 
@@ -30,7 +30,7 @@ void CrucibleConnector::setServer(const QString &server) {
 }
 
 RestCommunicator * CrucibleConnector::createCommunicator() {
-    RestCommunicator *communicator = new RestCommunicator(this);
+    RestCommunicator *communicator = new ReviewsCommunicator(this);
 
     communicator->setServer(m_server);
     communicator->setUser(m_user);

@@ -1,18 +1,18 @@
 #ifndef STARTREVIEWACTION_H
 #define STARTREVIEWACTION_H
 
-#include "AbstractAction.h"
+#include "AbstractReviewAction.h"
 
 class QNetworkReply;
 
-class StartReviewAction : public AbstractAction
+class StartReviewAction : public AbstractReviewAction
 {
     Q_OBJECT
 
     public:
         StartReviewAction(const QUrl &server, Review *review,
                     RestCommunicator *communicator, QObject *parent)
-        : AbstractAction(server, review, communicator, parent) {}
+        : AbstractReviewAction(server, review, communicator, parent) {}
         virtual void run();
 
     signals:

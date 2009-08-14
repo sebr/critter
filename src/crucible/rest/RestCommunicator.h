@@ -2,6 +2,7 @@
 #define RESTCOMMUNICATOR_H
 
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QUrl>
 #include <QXmlSimpleReader>
@@ -29,17 +30,20 @@ class RestCommunicator : public QObject
         void postTextData(const QString &path, const QString &data);
         void postData(const QString &path, const QByteArray &data = QByteArray(), const QString &contentType = "application/xml");
 
+        void get(const QString &path);
+
     signals:
         void callFailed(QNetworkReply*);
         void callSuccessful(QNetworkReply*);
 
-    private slots:
-        void replyFinished(QNetworkReply *reply);
+    protected slots:
+        void replyFinishedSlot(QNetworkReply *reply);
         void authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator);
 
-    private:
-        inline QUrl apiUrl(const QString &path = QString()) const;
-        inline QUrl feApiUrl(const QString &path = QString()) const;
+    protected:
+        virtual QNetworkRequest authenticatedRequest(const QString &path, const QString &contentType = QString()) const;
+        virtual void replyFinished(QNetworkReply *reply);
+        virtual QUrl apiUrl(const QString &path = QString()) const = 0;
 
         QNetworkAccessManager *m_manager;
         QUrl m_server;

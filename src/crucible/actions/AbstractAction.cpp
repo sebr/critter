@@ -1,17 +1,14 @@
 
 #include "AbstractAction.h"
 
-#include "../RestCommunicator.h"
-#include "../Review.h"
+#include "../rest/RestCommunicator.h"
 #include "../../Debug.h"
 
 #include <QNetworkReply>
 
-AbstractAction::AbstractAction(const QUrl &server, Review *review,
-                               RestCommunicator *communicator, QObject *parent)
+AbstractAction::AbstractAction(const QUrl &server, RestCommunicator *communicator, QObject *parent)
     : QObject(parent)
     , m_server(server)
-    , m_review(review)
     , m_communicator(communicator)
 {
     init();
