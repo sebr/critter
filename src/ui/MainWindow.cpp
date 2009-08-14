@@ -1,12 +1,17 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include "../Debug.h"
+#include "../crucible/Project.h"
+#include "../crucible/CrucibleConnectorBase.h"
+#include "../crucible/actions/projects/LoadProjectsAction.h"
 #include "../crucible/rest/ProjectsCommunicator.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(CrucibleConnectorBase *connector, QWidget *parent) :
     QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
     , m_critter(new Critter(this))
+    , m_connector(connector)
 {
     m_ui->setupUi(this);
 
@@ -33,6 +38,20 @@ void MainWindow::changeEvent(QEvent *e)
 }
 
 void MainWindow::loadData() {
-    ProjectsCommunicator *pC = new ProjectsCommunicator(this);
+    DEBUG_BLOCK
 
+    ProjectsCommunicator *pc = new ProjectsCommunicator(this);
+    LoadProjectsAction *lpa = new LoadProjectsAction(m_connector->server(), pc, this);
+
+    connect(lpa, SIGNAL(projectsReceived(QList<Project*>)), this, SLOT(loadProjects(QList<Project*>)));
+
+    lpa->run();
+}
+
+void MainWindow::loadProjects(QList<Project*> projects) {
+    DEBUG_BLOCK
+
+    foreach(Project *p, projects) {
+        m_ui->project->addItem(p->key() + ": " + p->name());
+    }
 }

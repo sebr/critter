@@ -30,7 +30,7 @@ class RestCommunicator : public QObject
         void postTextData(const QString &path, const QString &data);
         void postData(const QString &path, const QByteArray &data = QByteArray(), const QString &contentType = "application/xml");
 
-        void get(const QString &path);
+        void get(const QString &path, const QString &contentType = "application/xml");
 
     signals:
         void callFailed(QNetworkReply*);

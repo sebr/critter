@@ -9,24 +9,10 @@
 #include "actions/reviews/CreateReviewAction.h"
 #include "actions/reviews/StartReviewAction.h"
 
-#include <QSettings>
-
 CrucibleConnector::CrucibleConnector( QObject *parent )
-    : QObject(parent)
+    : CrucibleConnectorBase(parent)
     , m_review(0)
 {
-    QSettings settings;
-
-    setServer( settings.value("crucible/server", "http://stella:6060/foo").toString() );
-    m_user = settings.value("crucible/username", "matt").toString();
-    m_password = settings.value("crucible/password", "matt").toString();
-}
-
-void CrucibleConnector::setServer(const QString &server) {
-    m_server = QUrl(server);
-    if (m_server.scheme().isEmpty()) {
-        m_server.setScheme("http");
-    }
 }
 
 RestCommunicator * CrucibleConnector::createCommunicator() {

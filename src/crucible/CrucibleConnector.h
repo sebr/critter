@@ -1,13 +1,15 @@
 #ifndef CRUCIBLECONNECTOR_H
 #define CRUCIBLECONNECTOR_H
 
+#include "CrucibleConnectorBase.h"
+
 #include <QObject>
 #include <QNetworkReply>
 
 class Review;
 class RestCommunicator;
 
-class CrucibleConnector : public QObject
+class CrucibleConnector : public CrucibleConnectorBase
 {
     Q_OBJECT
 
@@ -15,7 +17,6 @@ class CrucibleConnector : public QObject
         CrucibleConnector(QObject *parent);
 
         void setReview(Review *review) { m_review = review; }
-        void setServer(const QString &server);
 
         void createReview();
         void updateReview();
@@ -32,10 +33,6 @@ class CrucibleConnector : public QObject
         RestCommunicator *createCommunicator();
 
         Review *m_review;
-
-        QUrl m_server;
-        QString m_user;
-        QString m_password;
 };
 
 #endif // CRUCIBLECONNECTOR_H

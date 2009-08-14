@@ -12,7 +12,7 @@ RestCommunicator::RestCommunicator(QObject *parent)
     , m_manager(new QNetworkAccessManager(this))
 {
     connect(m_manager, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(replyFinished(QNetworkReply*)));
+            this, SLOT(replyFinishedSlot(QNetworkReply*)));
 
     connect(m_manager, SIGNAL(authenticationRequired(QNetworkReply*,QAuthenticator*)),
             this, SLOT(authenticationRequired(QNetworkReply*,QAuthenticator*)));
@@ -73,9 +73,9 @@ void RestCommunicator::postData(const QString &path, const QByteArray &data, con
     m_manager->post(request, data);
 }
 
-void RestCommunicator::get(const QString &path) {
+void RestCommunicator::get(const QString &path, const QString &contentType) {
     DEBUG_BLOCK
-    QNetworkRequest request = authenticatedRequest(path);
+    QNetworkRequest request = authenticatedRequest(path, contentType);
 
     m_manager->get(request);
 }

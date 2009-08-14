@@ -38,7 +38,9 @@ HEADERS += src/Critter.h \
     src/ui/MainWindow.h \
     src/crucible/rest/ProjectsCommunicator.h \
     src/crucible/actions/projects/LoadProjectsAction.h \
-    src/crucible/actions/reviews/AbstractReviewAction.h
+    src/crucible/actions/reviews/AbstractReviewAction.h \
+    src/crucible/Project.h \
+    src/crucible/CrucibleConnectorBase.h
 LIBS += -lboost_program_options
 MOC_DIR = build
 OBJECTS_DIR = build

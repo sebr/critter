@@ -19,12 +19,24 @@ bool Debug::enabled = false;
 
 Critter::Critter(QObject *parent)
     : QObject(parent)
-    , m_crucibleConnector(new CrucibleConnector(this))
+    , m_crucibleConnector(0)
 {
+}
+
+Critter::Critter(CrucibleConnectorBase *connector, QObject *parent)
+    : QObject(parent)
+{
+    m_crucibleConnector = new CrucibleConnector(connector);
 }
 
 void Critter::parseOptions(po::variables_map vm) {
     DEBUG_BLOCK
+
+    if (!m_crucibleConnector) {
+        warning() << "No crucible connector!";
+        return;
+    }
+
     const bool isCreateReview = vm.count("create-review");
     const bool isUpdateReview = vm.count("update-review");
     bool readFromStdIn = true;
@@ -40,12 +52,6 @@ void Critter::parseOptions(po::variables_map vm) {
     if (isCreateReview && !vm.count("author")) {
         error() << "No author specified";
         qApp->exit(1);
-    }
-
-    if (vm.count("server")) {
-        const QString server = QString::fromStdString(vm["server"].as<string>());
-        debug() << "server:" << server;
-        m_crucibleConnector->setServer(server);
     }
 
     Review *review = new Review(this);

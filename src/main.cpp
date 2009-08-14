@@ -1,5 +1,6 @@
 
 #include "Critter.h"
+#include "crucible/CrucibleConnectorBase.h"
 #include "ui/MainWindow.h"
 
 #include <QApplication>
@@ -64,11 +65,22 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    if (argc == 1) {
-        MainWindow *w = new MainWindow();
+    bool showGui = argc == 1;
+
+    CrucibleConnectorBase *connector = new CrucibleConnectorBase();
+
+    if (vm.count("server")) {
+        const QString server = QString::fromStdString(vm["server"].as<string>());
+        connector->setServer(server);
+    }
+
+    if (showGui) {
+        MainWindow *w = new MainWindow(connector);
+        connector->setParent(w);
         w->show();
     } else {
-        Critter *critter = new Critter();
+        Critter *critter = new Critter(connector);
+        connector->setParent(critter);
         critter->parseOptions(vm);
     }
 

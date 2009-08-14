@@ -3,6 +3,7 @@
 
 #include "../AbstractAction.h"
 
+class Project;
 class QNetworkReply;
 
 class LoadProjectsAction : public AbstractAction
@@ -15,7 +16,7 @@ class LoadProjectsAction : public AbstractAction
         virtual void run();
 
     signals:
-        void projectsReceived(QStringList projects);
+        void projectsReceived(QList<Project*> projects);
 
     protected:
         virtual void callFailed(QNetworkReply *reply);

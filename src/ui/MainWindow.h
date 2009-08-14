@@ -4,26 +4,34 @@
 #include "../Critter.h"
 
 #include <QMainWindow>
+#include <QList>
 
 namespace Ui {
     class MainWindow;
 }
+class CrucibleConnectorBase;
+class Project;
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT
-public:
-    MainWindow(QWidget *parent = 0);
-    ~MainWindow();
+        Q_OBJECT
 
-protected:
-    void changeEvent(QEvent *e);
+    public:
+        MainWindow(CrucibleConnectorBase *connector, QWidget *parent = 0);
+        ~MainWindow();
 
-private:
-    void loadData();
+    protected:
+        void changeEvent(QEvent *e);
 
-    Ui::MainWindow *m_ui;
+    private slots:
+        void loadProjects(QList<Project*> projects);
 
-    Critter *m_critter;
+    private:
+        void loadData();
+
+        Ui::MainWindow *m_ui;
+
+        Critter *m_critter;
+        CrucibleConnectorBase *m_connector;
 };
 
 #endif // MAINWINDOW_H
