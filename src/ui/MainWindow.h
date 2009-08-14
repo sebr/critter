@@ -11,6 +11,7 @@ namespace Ui {
 }
 class CrucibleConnectorBase;
 class Project;
+class Repository;
 
 class MainWindow : public QMainWindow {
         Q_OBJECT
@@ -24,6 +25,7 @@ class MainWindow : public QMainWindow {
 
     private slots:
         void loadProjects(QList<Project*> projects);
+        void loadRepositories(QList<Repository*> repos);
 
     private:
         void loadData();

@@ -1,8 +1,6 @@
 #include "ProjectsCommunicator.h"
 #include "../../Debug.h"
 
-#include <QNetworkReply>
-
 ProjectsCommunicator::ProjectsCommunicator(QObject *parent)
     : RestCommunicator(parent)
 {

@@ -43,8 +43,6 @@ void RestCommunicator::replyFinishedSlot(QNetworkReply *reply) {
 }
 
 void RestCommunicator::replyFinished(QNetworkReply *reply) {
-    DEBUG_BLOCK
-
     if (reply->error()) {
         emit callFailed(reply);
     } else {
@@ -67,15 +65,11 @@ void RestCommunicator::postTextData(const QString &path, const QString &data) {
 }
 
 void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
-    DEBUG_BLOCK
-
     QNetworkRequest request = authenticatedRequest(path, contentType);
     m_manager->post(request, data);
 }
 
 void RestCommunicator::get(const QString &path, const QString &contentType) {
-    DEBUG_BLOCK
-
     QNetworkRequest request = authenticatedRequest(path, contentType);
     m_manager->get(request);
 }
@@ -91,7 +85,6 @@ QNetworkRequest RestCommunicator::authenticatedRequest(const QString &path, cons
 }
 
 void RestCommunicator::authenticationRequired(QNetworkReply *reply, QAuthenticator *authenticator) {
-    DEBUG_BLOCK
     Q_UNUSED(reply);
 
     authenticator->setUser(m_username);

@@ -21,42 +21,57 @@
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
          <widget class="QComboBox" name="repository">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <item>
            <property name="text">
-            <string>Repository</string>
+            <string>Loading</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="project">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <item>
            <property name="text">
-            <string>Project</string>
+            <string>Loading</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="author">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <item>
            <property name="text">
-            <string>Author</string>
+            <string>Loading</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
          <widget class="QComboBox" name="moderator">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <item>
            <property name="text">
-            <string>Moderator</string>
+            <string>Loading</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
          <widget class="QCheckBox" name="checkBox">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Allow anyone to join</string>
           </property>

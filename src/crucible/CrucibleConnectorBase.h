@@ -15,9 +15,9 @@ class CrucibleConnectorBase : public QObject
         {
             QSettings settings;
 
-            setServer( settings.value("crucible/server", "http://stella:6060/foo").toString() );
-            m_user = settings.value("crucible/username", "matt").toString();
-            m_password = settings.value("crucible/password", "matt").toString();
+            setServer( settings.value("crucible/server", "http://stella:6060/crucible").toString() );
+            m_user = settings.value("crucible/username", "sruiz").toString();
+            m_password = settings.value("crucible/password", "password").toString();
         }
 
         void setServer(const QString &server) {

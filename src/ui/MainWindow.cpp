@@ -3,9 +3,12 @@
 
 #include "../Debug.h"
 #include "../crucible/Project.h"
+#include "../crucible/Repository.h"
 #include "../crucible/CrucibleConnectorBase.h"
 #include "../crucible/actions/projects/LoadProjectsAction.h"
+#include "../crucible/actions/repositories/LoadRepositoriesAction.h"
 #include "../crucible/rest/ProjectsCommunicator.h"
+#include "../crucible/rest/RepositoryCommunicator.h"
 
 MainWindow::MainWindow(CrucibleConnectorBase *connector, QWidget *parent) :
     QMainWindow(parent)
@@ -44,17 +47,52 @@ void MainWindow::loadData() {
     pc->setServer(m_connector->server());
     pc->setUser(m_connector->user());
     pc->setPassword(m_connector->password());
+
     LoadProjectsAction *lpa = new LoadProjectsAction(pc, this);
-
     connect(lpa, SIGNAL(projectsReceived(QList<Project*>)), this, SLOT(loadProjects(QList<Project*>)));
-
     lpa->run();
+
+    RepositoryCommunicator *rc = new RepositoryCommunicator(this);
+    rc->setServer(m_connector->server());
+    rc->setUser(m_connector->user());
+    rc->setPassword(m_connector->password());
+
+    LoadRepositoriesAction *lra = new LoadRepositoriesAction(rc, this);
+    connect(lra, SIGNAL(repositoriesReceived(QList<Repository*>)), this, SLOT(loadRepositories(QList<Repository*>)));
+    lra->run();
+
 }
 
 void MainWindow::loadProjects(QList<Project*> projects) {
     DEBUG_BLOCK
 
+    m_ui->project->clear();
+
+    if (projects.isEmpty()) {
+        m_ui->project->addItem("No projects found");
+        m_ui->project->setDisabled(true);
+    } else {
+        m_ui->project->setDisabled(false);
+    }
+
     foreach(Project *p, projects) {
         m_ui->project->addItem(p->key() + ": " + p->name());
+    }
+}
+
+void MainWindow::loadRepositories(QList<Repository*> repos) {
+    DEBUG_BLOCK
+
+    m_ui->repository->clear();
+
+    if (repos.isEmpty()) {
+        m_ui->repository->addItem("No repositories found");
+        m_ui->repository->setDisabled(true);
+    } else {
+        m_ui->repository->setDisabled(false);
+    }
+
+    foreach(Repository *r, repos) {
+        m_ui->repository->addItem(r->name());
     }
 }
