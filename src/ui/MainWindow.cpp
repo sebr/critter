@@ -11,6 +11,8 @@
 #include "../crucible/actions/users/LoadUsersAction.h"
 #include "../crucible/rest/Communicators.h"
 
+#include <QListWidgetItem>
+
 Q_DECLARE_METATYPE(Project*)
 Q_DECLARE_METATYPE(Repository*)
 Q_DECLARE_METATYPE(User*)
@@ -118,26 +120,41 @@ void MainWindow::loadUsers(QList<User*> users) {
 
     m_ui->moderator->clear();
     m_ui->author->clear();
+    m_ui->reviewers->clear();
 
     if (users.isEmpty()) {
         m_ui->moderator->addItem("No users found");
         m_ui->moderator->setDisabled(true);
         m_ui->author->addItem("No users found");
         m_ui->author->setDisabled(true);
+
+        m_ui->reviewers->addItem("No users found");
+
+        m_ui->reviewers->setDisabled(true);
     } else {
         m_ui->moderator->setDisabled(false);
         m_ui->author->setDisabled(false);
+        m_ui->reviewers->setDisabled(false);
     }
 
     int i = 0;
     foreach(User *u, users) {
         QVariant data; data.setValue(u);
-        m_ui->moderator->insertItem(i, u->displayName(), data);
-        m_ui->author->insertItem(i, u->displayName(), data);
+
+        const QString text = u->displayName().isEmpty() ? u->userName() : u->displayName();
+
+        m_ui->moderator->insertItem(i, text, data);
+        m_ui->author->insertItem(i, text, data);
 
         if (u->userName() == m_connector->user()) {
             m_ui->moderator->setCurrentIndex(i);
             m_ui->author->setCurrentIndex(i);
+        } else {
+            QListWidgetItem *item = new QListWidgetItem(m_ui->reviewers);
+            item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsUserCheckable);
+            item->setCheckState(Qt::Unchecked);
+            item->setText(text);
+            m_ui->reviewers->addItem(item);
         }
         i++;
     }

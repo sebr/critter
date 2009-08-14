@@ -70,7 +70,7 @@
         <item>
          <widget class="QCheckBox" name="checkBox">
           <property name="enabled">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="text">
            <string>Allow anyone to join</string>
@@ -80,7 +80,7 @@
        </layout>
       </item>
       <item>
-       <widget class="QListView" name="reviewers"/>
+       <widget class="QListWidget" name="reviewers"/>
       </item>
      </layout>
     </item>
