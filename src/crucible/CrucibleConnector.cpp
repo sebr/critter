@@ -46,7 +46,7 @@ void CrucibleConnector::updateReviewContent() {
 
 void CrucibleConnector::createReview() {
     DEBUG_BLOCK
-    CreateReviewAction *a = new CreateReviewAction(m_server, m_review, createCommunicator(), this);
+    CreateReviewAction *a = new CreateReviewAction(m_review, createCommunicator(), this);
 
     connect(a, SIGNAL(reviewCreated()), this, SLOT(updateReviewContent()));
 
@@ -67,7 +67,7 @@ void CrucibleConnector::startReview() {
         error() << "Can't start a review without a PermaId";
         return;
     }
-    StartReviewAction *a = new StartReviewAction(m_server, m_review, createCommunicator(), this);
+    StartReviewAction *a = new StartReviewAction(m_review, createCommunicator(), this);
     a->run();
 }
 
@@ -77,7 +77,7 @@ void CrucibleConnector::addReviewers() {
         error() << "Can't update a review without a PermaId";
         return;
     }
-    AddReviewersAction *a = new AddReviewersAction(m_server, m_review, createCommunicator(), this);
+    AddReviewersAction *a = new AddReviewersAction(m_review, createCommunicator(), this);
     a->run();
 }
 
@@ -87,7 +87,7 @@ void CrucibleConnector::addChangesets() {
         error() << "Can't update a review without a PermaId";
         return;
     }
-    AddChangesetsAction *a = new AddChangesetsAction(m_server, m_review, createCommunicator(), this);
+    AddChangesetsAction *a = new AddChangesetsAction(m_review, createCommunicator(), this);
     a->run();
 }
 
@@ -97,7 +97,7 @@ void CrucibleConnector::addPatches() {
         error() << "Can't update a review without a PermaId";
         return;
     }
-    AddPatchesAction *a = new AddPatchesAction(m_server, m_review, createCommunicator(), this);
+    AddPatchesAction *a = new AddPatchesAction(m_review, createCommunicator(), this);
     a->run();
 }
 

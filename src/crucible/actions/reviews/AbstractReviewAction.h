@@ -9,9 +9,8 @@ class AbstractReviewAction : public AbstractAction
     Q_OBJECT
 
     public:
-        AbstractReviewAction(const QUrl &server, Review *review,
-                        RestCommunicator *communicator, QObject *parent)
-            : AbstractAction(server, communicator, parent)
+        AbstractReviewAction(Review *review, RestCommunicator *communicator, QObject *parent)
+            : AbstractAction(communicator, parent)
             , m_review(review) {}
 
     protected:

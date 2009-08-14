@@ -10,9 +10,8 @@ class AddReviewersAction : public AbstractReviewAction
     Q_OBJECT
 
     public:
-        AddReviewersAction(const QUrl &server, Review *review,
-                        RestCommunicator *communicator, QObject *parent)
-            : AbstractReviewAction(server, review, communicator, parent) {}
+        AddReviewersAction(Review *review, RestCommunicator *communicator, QObject *parent)
+            : AbstractReviewAction(review, communicator, parent) {}
         virtual void run();
 
     signals:

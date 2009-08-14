@@ -2,7 +2,6 @@
 #define ABSTRACTACTION_H
 
 #include <QObject>
-#include <QUrl>
 
 class RestCommunicator;
 class QNetworkReply;
@@ -12,7 +11,7 @@ class AbstractAction : public QObject
     Q_OBJECT
 
     public:
-        AbstractAction(const QUrl &server, RestCommunicator *communicator, QObject *parent);
+        AbstractAction(RestCommunicator *communicator, QObject *parent);
         virtual ~AbstractAction() {}
 
         virtual void run() = 0;
@@ -27,7 +26,6 @@ class AbstractAction : public QObject
         virtual void callFailed(QNetworkReply *reply) = 0;
         virtual void callSuccessful(QNetworkReply *reply) = 0;
 
-        QUrl m_server;
         RestCommunicator *m_communicator;
 };
 

@@ -12,7 +12,7 @@ void CreateReviewAction::run() {
 }
 
 void CreateReviewAction::callFailed(QNetworkReply *reply) {
-    debug() << "Could not create review at" << m_server << ":" << reply->errorString();
+    debug() << "Could not create review at" << m_communicator->server() << ":" << reply->errorString();
 }
 
 void CreateReviewAction::callSuccessful(QNetworkReply *reply) {
@@ -23,7 +23,7 @@ void CreateReviewAction::callSuccessful(QNetworkReply *reply) {
     m_review->setId(id);
 
     debug() << "id:" << id;
-    QString reviewUrl = m_server.toString(QUrl::StripTrailingSlash) + "/cru/" + id;
+    QString reviewUrl = m_communicator->server().toString(QUrl::StripTrailingSlash) + "/cru/" + id;
 
     qDebug() << "Created review:" << reviewUrl;
 

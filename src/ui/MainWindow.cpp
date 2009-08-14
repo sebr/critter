@@ -41,7 +41,10 @@ void MainWindow::loadData() {
     DEBUG_BLOCK
 
     ProjectsCommunicator *pc = new ProjectsCommunicator(this);
-    LoadProjectsAction *lpa = new LoadProjectsAction(m_connector->server(), pc, this);
+    pc->setServer(m_connector->server());
+    pc->setUser(m_connector->user());
+    pc->setPassword(m_connector->password());
+    LoadProjectsAction *lpa = new LoadProjectsAction(pc, this);
 
     connect(lpa, SIGNAL(projectsReceived(QList<Project*>)), this, SLOT(loadProjects(QList<Project*>)));
 

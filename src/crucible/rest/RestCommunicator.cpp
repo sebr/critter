@@ -33,7 +33,7 @@ void RestCommunicator::setPassword( const QString &password )
     m_password = password;
 }
 
-inline QUrl RestCommunicator::apiUrl(const QString &path) const {
+QUrl RestCommunicator::apiUrl(const QString &path) const {
     QUrl url(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service/reviews-v1/" + path);
     return url;
 }
@@ -68,15 +68,15 @@ void RestCommunicator::postTextData(const QString &path, const QString &data) {
 
 void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
     DEBUG_BLOCK
-    QNetworkRequest request = authenticatedRequest(path, contentType);
 
+    QNetworkRequest request = authenticatedRequest(path, contentType);
     m_manager->post(request, data);
 }
 
 void RestCommunicator::get(const QString &path, const QString &contentType) {
     DEBUG_BLOCK
-    QNetworkRequest request = authenticatedRequest(path, contentType);
 
+    QNetworkRequest request = authenticatedRequest(path, contentType);
     m_manager->get(request);
 }
 

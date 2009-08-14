@@ -11,7 +11,7 @@ void LoadProjectsAction::run() {
 }
 
 void LoadProjectsAction::callFailed(QNetworkReply *reply) {
-    debug() << "Could not load projects from" << m_server.toString() << ":" << reply->errorString();
+    debug() << "Could not load projects from" << m_communicator->server().toString() << ":" << reply->errorString();
 }
 
 void LoadProjectsAction::callSuccessful(QNetworkReply *reply) {

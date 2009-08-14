@@ -11,8 +11,8 @@ class LoadProjectsAction : public AbstractAction
     Q_OBJECT
 
     public:
-        LoadProjectsAction(const QUrl &server, RestCommunicator *communicator, QObject *parent)
-            : AbstractAction(server, communicator, parent) {}
+        LoadProjectsAction(RestCommunicator *communicator, QObject *parent)
+            : AbstractAction(communicator, parent) {}
         virtual void run();
 
     signals:

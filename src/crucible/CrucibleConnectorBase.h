@@ -28,6 +28,8 @@ class CrucibleConnectorBase : public QObject
         }
 
         QUrl server() const { return m_server; }
+        QString user() const { return m_user; }
+        QString password() const { return m_password; }
 
     protected:
         QUrl m_server;

@@ -70,6 +70,7 @@ int main(int argc, char *argv[])
     CrucibleConnectorBase *connector = new CrucibleConnectorBase();
 
     if (vm.count("server")) {
+        showGui = true;
         const QString server = QString::fromStdString(vm["server"].as<string>());
         connector->setServer(server);
     }

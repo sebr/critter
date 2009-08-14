@@ -6,9 +6,8 @@
 
 #include <QNetworkReply>
 
-AbstractAction::AbstractAction(const QUrl &server, RestCommunicator *communicator, QObject *parent)
+AbstractAction::AbstractAction(RestCommunicator *communicator, QObject *parent)
     : QObject(parent)
-    , m_server(server)
     , m_communicator(communicator)
 {
     init();
