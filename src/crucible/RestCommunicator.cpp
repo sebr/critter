@@ -38,6 +38,11 @@ inline QUrl RestCommunicator::apiUrl(const QString &path) const {
     return url;
 }
 
+inline QUrl RestCommunicator::feApiUrl(const QString &path) const {
+    QUrl url(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/" + path);
+    return url;
+}
+
 void RestCommunicator::replyFinished(QNetworkReply *reply) {
     DEBUG_BLOCK
 

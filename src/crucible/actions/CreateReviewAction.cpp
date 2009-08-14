@@ -7,6 +7,7 @@
 
 void CreateReviewAction::run() {
     DEBUG_BLOCK
+
     m_communicator->postData(QString(), m_review->createData());
 }
 

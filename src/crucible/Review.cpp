@@ -92,12 +92,8 @@ QByteArray Review::changesetsData() const {
 }
 
 QByteArray Review::uploadData(const QByteArray &upload) const {
+    Q_UNUSED(upload);
+
     QByteArray ba;
-
-    QXmlStreamWriter xml(&ba);
-    xml.writeStartDocument();
-
-    xml.writeEndDocument();
-
     return ba;
 }

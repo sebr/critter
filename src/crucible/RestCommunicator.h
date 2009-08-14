@@ -39,6 +39,7 @@ class RestCommunicator : public QObject
 
     private:
         inline QUrl apiUrl(const QString &path = QString()) const;
+        inline QUrl feApiUrl(const QString &path = QString()) const;
 
         QNetworkAccessManager *m_manager;
         QUrl m_server;
