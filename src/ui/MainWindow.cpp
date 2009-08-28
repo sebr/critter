@@ -48,8 +48,6 @@ void MainWindow::changeEvent(QEvent *e)
 }
 
 void MainWindow::loadData() {
-    DEBUG_BLOCK
-
     ProjectsCommunicator *pc = new ProjectsCommunicator(this);
     pc->setServer(m_connector->server());
     pc->setUser(m_connector->user());
@@ -80,8 +78,6 @@ void MainWindow::loadData() {
 }
 
 void MainWindow::loadProjects(QList<Project*> projects) {
-    DEBUG_BLOCK
-
     m_ui->project->clear();
 
     if (projects.isEmpty()) {
@@ -98,8 +94,6 @@ void MainWindow::loadProjects(QList<Project*> projects) {
 }
 
 void MainWindow::loadRepositories(QList<Repository*> repos) {
-    DEBUG_BLOCK
-
     m_ui->repository->clear();
 
     if (repos.isEmpty()) {
@@ -116,8 +110,6 @@ void MainWindow::loadRepositories(QList<Repository*> repos) {
 }
 
 void MainWindow::loadUsers(QList<User*> users) {
-    DEBUG_BLOCK
-
     m_ui->moderator->clear();
     m_ui->author->clear();
     m_ui->reviewers->clear();

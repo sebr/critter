@@ -5,6 +5,7 @@
 #include "crucible/CrucibleConnector.h"
 #include "crucible/Review.h"
 
+#include <QApplication>
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
@@ -30,41 +31,34 @@ Critter::Critter(CrucibleConnectorBase *connector, QObject *parent)
 }
 
 void Critter::parseOptions(po::variables_map vm) {
-    DEBUG_BLOCK
-
     if (!m_crucibleConnector) {
         warning() << "No crucible connector!";
         return;
     }
 
-    const bool isCreateReview = vm.count("create-review");
-    const bool isUpdateReview = vm.count("update-review");
+    const bool isCreateReview = vm.count("create");
+    const bool isUpdateReview = vm.count("update");
     bool readFromStdIn = true;
-
-    debug() << "isCreate" << isCreateReview;
-    debug() << "isUpdate" << isUpdateReview;
 
     if (isCreateReview && isUpdateReview) {
         error() << "You can't create and update a review at the same time!";
         qApp->exit(1);
     }
 
-    if (isCreateReview && !vm.count("author")) {
-        error() << "No author specified";
-        qApp->exit(1);
-    }
-
     Review *review = new Review(this);
 
     if (isCreateReview) {
-        const QString author = QString::fromStdString(vm["author"].as<string>());
+        QString author = m_crucibleConnector->user();
+        if (vm.count("author")) {
+            author = QString::fromStdString(vm["author"].as<string>());
+        }
         review->setAuthor(author);
     }
 
     m_crucibleConnector->setReview(review);
 
     if (isUpdateReview) {
-        const QString id = QString::fromStdString(vm["update-review"].as<string>());
+        const QString id = QString::fromStdString(vm["update"].as<string>());
         review->setId(id);
     }
 
@@ -145,8 +139,6 @@ void Critter::testConnection() {
 
 QByteArray Critter::loadPatch(const QString &filename) const
 {
-    DEBUG_BLOCK
-
     QFileInfo fi(QDir::current(), filename);
 
     debug() << "loading patch data from" << fi.filePath();
@@ -163,7 +155,6 @@ QByteArray Critter::loadPatch(const QString &filename) const
 }
 
 void Critter::readStdIn(Review *review) {
-    DEBUG_BLOCK
     std::string input_line;
 
     QByteArray ba;
@@ -188,12 +179,10 @@ void Critter::readStdIn(Review *review) {
     }
 
     if (isPatch) {
-        debug() << "found a patch!";
         review->addPatch(ba);
     }
 
     if (!commitRevision.isEmpty()) {
-        debug() << "found a commit!";
         review->addChangeset(commitRevision);
     }
 }

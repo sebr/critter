@@ -6,8 +6,6 @@
 #include <QNetworkReply>
 
 void CreateReviewAction::run() {
-    DEBUG_BLOCK
-
     m_communicator->postData(QString(), m_review->createData());
 }
 
@@ -22,7 +20,6 @@ void CreateReviewAction::callSuccessful(QNetworkReply *reply) {
     QString id = location.remove(url).mid(1);
     m_review->setId(id);
 
-    debug() << "id:" << id;
     QString reviewUrl = m_communicator->server().toString(QUrl::StripTrailingSlash) + "/cru/" + id;
 
     qDebug() << "Created review:" << reviewUrl;

@@ -32,12 +32,11 @@ int main(int argc, char *argv[])
     po::options_description config("Configuration options");
     config.add_options()
         ("server,S", po::value<string>(), "crucible server")
-        ("create-review,c", "creating a review")
+        ("create,c", "creating a review")
         ("start,s", "start the review")
         ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
-        ("upload,u", po::value< vector<string> >()->multitoken(), "files to upload to the specified review")
         ("patch,p", po::value<string>(), "patch to upload to the specified review")
-        ("update-review,U", po::value<string>(), "the review to update. if not specified, a new review is created")
+        ("update,u", po::value<string>(), "the review to update. if not specified, a new review is created")
         ;
 
     po::options_description review("Review options");

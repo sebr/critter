@@ -26,10 +26,6 @@ RestCommunicator * CrucibleConnector::createCommunicator() {
 }
 
 void CrucibleConnector::updateReviewContent() {
-    DEBUG_BLOCK
-    if (m_review->shouldStart()) {
-        startReview();
-    }
     if (m_review->hasReviewers()) {
         addReviewers();
     }
@@ -42,10 +38,12 @@ void CrucibleConnector::updateReviewContent() {
     if (m_review->hasPatches()) {
         addPatches();
     }
+    if (m_review->shouldStart()) {
+        startReview();
+    }
 }
 
 void CrucibleConnector::createReview() {
-    DEBUG_BLOCK
     CreateReviewAction *a = new CreateReviewAction(m_review, createCommunicator(), this);
 
     connect(a, SIGNAL(reviewCreated()), this, SLOT(updateReviewContent()));
@@ -72,7 +70,6 @@ void CrucibleConnector::startReview() {
 }
 
 void CrucibleConnector::addReviewers() {
-    DEBUG_BLOCK
     if (m_review->id().isEmpty()) {
         error() << "Can't update a review without a PermaId";
         return;
@@ -82,7 +79,6 @@ void CrucibleConnector::addReviewers() {
 }
 
 void CrucibleConnector::addChangesets() {
-    DEBUG_BLOCK
     if (m_review->id().isEmpty()) {
         error() << "Can't update a review without a PermaId";
         return;
@@ -92,7 +88,6 @@ void CrucibleConnector::addChangesets() {
 }
 
 void CrucibleConnector::addPatches() {
-    DEBUG_BLOCK
     if (m_review->id().isEmpty()) {
         error() << "Can't update a review without a PermaId";
         return;
