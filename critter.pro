@@ -44,7 +44,11 @@ HEADERS += src/Critter.h \
     src/crucible/rest/Communicators.h \
     src/crucible/actions/users/LoadUsersAction.h \
     src/crucible/User.h
-LIBS += -lboost_program_options
+macx {
+	LIBS += -lboost_program_options-mt
+} else {
+	LIBS += -lboost_program_options
+}
 MOC_DIR = build
 OBJECTS_DIR = build
 UI_DIR = build
