@@ -1,0 +1,7 @@
+Compiling Critter
+==================
+
+qmake
+make -j5
+./critter --help
+

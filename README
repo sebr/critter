@@ -1,0 +1,27 @@
+
+ Critter - A command line client for Crucible
+==============================================
+
+ DEPENDENCIES
+==============
+
+Required
+    * Qt 4.5 (or newer)
+      (c++ library, also used for future gui work)
+      http://qt.nokia.com/
+
+    * Boost Program_options
+      (Boost c++ library for handling application options)
+      http://www.boost.org/
+
+--------------------------------------------------------------------------------
+
+
+ IMPORTANT INSTALL INSTRUCTIONS
+================================
+
+To compile from source, please refer to the INSTALL file.
+
+--------------------------------------------------------------------------------
+
+ - Seb Ruiz <sruiz@atlassian.com>
