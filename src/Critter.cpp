@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QFile>
+#include <QTimer>
 
 #include <iostream>
 
@@ -30,27 +31,37 @@ Critter::Critter(CrucibleConnectorBase *connector, QObject *parent)
     m_crucibleConnector = new CrucibleConnector(connector);
 }
 
-void Critter::parseOptions(po::variables_map vm) {
+void Critter::setOptions(po::variables_map vm) {
+    m_vm = vm;
+}
+
+void Critter::exec() {
+    QTimer::singleShot(0, this, SLOT(parseOptions()));
+}
+
+void Critter::parseOptions() {
     if (!m_crucibleConnector) {
         warning() << "No crucible connector!";
+        qApp->quit();
         return;
     }
 
-    const bool isCreateReview = vm.count("create");
-    const bool isUpdateReview = vm.count("update");
+    const bool isCreateReview = m_vm.count("create");
+    const bool isUpdateReview = m_vm.count("update");
     bool readFromStdIn = true;
 
     if (isCreateReview && isUpdateReview) {
         error() << "You can't create and update a review at the same time!";
-        qApp->exit(1);
+        qApp->quit();
+        return;
     }
 
     Review *review = new Review(this);
 
     if (isCreateReview) {
         QString author = m_crucibleConnector->user();
-        if (vm.count("author")) {
-            author = QString::fromStdString(vm["author"].as<string>());
+        if (m_vm.count("author")) {
+            author = QString::fromStdString(m_vm["author"].as<string>());
         }
         review->setAuthor(author);
     }
@@ -58,63 +69,63 @@ void Critter::parseOptions(po::variables_map vm) {
     m_crucibleConnector->setReview(review);
 
     if (isUpdateReview) {
-        const QString id = QString::fromStdString(vm["update"].as<string>());
+        const QString id = QString::fromStdString(m_vm["update"].as<string>());
         review->setId(id);
     }
 
-    if (vm.count("title")) {
-        const QString name = QString::fromStdString(vm["title"].as<string>());
+    if (m_vm.count("title")) {
+        const QString name = QString::fromStdString(m_vm["title"].as<string>());
         review->setName(name);
     }
 
-    if (vm.count("objectives")) {
-        const QString objectives = QString::fromStdString(vm["objectives"].as<string>());
+    if (m_vm.count("objectives")) {
+        const QString objectives = QString::fromStdString(m_vm["objectives"].as<string>());
         review->setDescription(objectives);
     }
 
-    if (vm.count("project")) {
-        const QString project = QString::fromStdString(vm["project"].as<string>());
+    if (m_vm.count("project")) {
+        const QString project = QString::fromStdString(m_vm["project"].as<string>());
         review->setProject(project);
     } else {
         review->setProject("CR");
     }
 
-    if (vm.count("start")) {
+    if (m_vm.count("start")) {
         review->setShouldStart(true);
     }
 
-    if (vm.count("creator")) {
-        const QString creator = QString::fromStdString(vm["creator"].as<string>());
+    if (m_vm.count("creator")) {
+        const QString creator = QString::fromStdString(m_vm["creator"].as<string>());
         review->setCreator(creator);
     }
-    if (vm.count("moderator")) {
-        const QString &moderator = QString::fromStdString(vm["moderator"].as<string>());
+    if (m_vm.count("moderator")) {
+        const QString &moderator = QString::fromStdString(m_vm["moderator"].as<string>());
         review->setModerator(moderator);
     }
 
-    if (vm.count("reviewers")) {
-        const QVector<string> reviewers = QVector<string>::fromStdVector(vm["reviewers"].as< vector<string> >());
+    if (m_vm.count("reviewers")) {
+        const QVector<string> reviewers = QVector<string>::fromStdVector(m_vm["reviewers"].as< vector<string> >());
         foreach(string rev, reviewers) {
             review->addReviewer(QString::fromStdString(rev));
         }
     }
     
-    if (vm.count("repository")) {
-        const QString repo = QString::fromStdString(vm["repository"].as<string>());
+    if (m_vm.count("repository")) {
+        const QString repo = QString::fromStdString(m_vm["repository"].as<string>());
         review->setRepository(repo);
     }
 
-    if (vm.count("changeset")) {
+    if (m_vm.count("changeset")) {
         readFromStdIn = false;
-        const QVector<string> changesets = QVector<string>::fromStdVector(vm["changeset"].as< vector<string> >());
+        const QVector<string> changesets = QVector<string>::fromStdVector(m_vm["changeset"].as< vector<string> >());
         foreach(string cs, changesets) {
             review->addChangeset(QString::fromStdString(cs));
         }
     }
 
-    if (vm.count("patch")) {
+    if (m_vm.count("patch")) {
         readFromStdIn = false;
-        const QString &patchFile = QString::fromStdString(vm["patch"].as<string>());
+        const QString &patchFile = QString::fromStdString(m_vm["patch"].as<string>());
         QByteArray patchData = loadPatch(patchFile);
         if (!patchData.isEmpty()) {
             review->addPatch(patchData);
@@ -122,6 +133,7 @@ void Critter::parseOptions(po::variables_map vm) {
     }
 
     if (readFromStdIn) {
+        debug() << "Reading from stdin...";
         readStdIn(review);
     }
 
@@ -130,6 +142,8 @@ void Critter::parseOptions(po::variables_map vm) {
     } else if (isUpdateReview) {
         m_crucibleConnector->updateReview();
     }
+    debug() << "All done, going to quit now...";
+    qApp->quit();
 }
 
 void Critter::testConnection() {

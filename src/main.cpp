@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
         connector->setServer(server);
     }
 
+    showGui = false;
     if (showGui) {
         MainWindow *w = new MainWindow(connector);
         connector->setParent(w);
@@ -81,7 +82,8 @@ int main(int argc, char *argv[])
     } else {
         Critter *critter = new Critter(connector);
         connector->setParent(critter);
-        critter->parseOptions(vm);
+        critter->setOptions(vm);
+        critter->exec();
     }
 
     return a.exec();

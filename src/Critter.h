@@ -13,11 +13,19 @@ class Review;
 
 class Critter : public QObject
 {
+    Q_OBJECT
+
     public:
         Critter(QObject *parent = 0);
         Critter(CrucibleConnectorBase *connector, QObject *parent = 0);
 
-        void parseOptions(po::variables_map vm);
+        void setOptions(po::variables_map vm);
+
+    public slots:
+        void exec();
+
+    private slots:
+        void parseOptions();
 
     private:
         QByteArray loadPatch(const QString &filename) const;
@@ -25,6 +33,7 @@ class Critter : public QObject
         void testConnection();
 
         CrucibleConnector *m_crucibleConnector;
+        po::variables_map m_vm;
 };
 
 #endif // CRITTER_H
