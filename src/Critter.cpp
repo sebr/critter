@@ -35,6 +35,9 @@ void Critter::setOptions(po::variables_map vm) {
     m_vm = vm;
 }
 
+/*
+ * This method exists to initialize the event loop
+ */
 void Critter::exec() {
     QTimer::singleShot(0, this, SLOT(parseOptions()));
 }
