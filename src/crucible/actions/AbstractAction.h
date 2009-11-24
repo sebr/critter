@@ -46,6 +46,9 @@ class AbstractAction : public QObject
 
         virtual void run() = 0;
 
+    signals:
+        void executed();
+
     private slots:
         void callFailedSlot(QNetworkReply *reply);
         void callSuccessfulSlot(QNetworkReply *reply);

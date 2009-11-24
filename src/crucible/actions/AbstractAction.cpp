@@ -50,8 +50,10 @@ void AbstractAction::init() {
 
 void AbstractAction::callFailedSlot(QNetworkReply *reply) {
     callFailed(reply);
+    emit executed();
 }
 
 void AbstractAction::callSuccessfulSlot(QNetworkReply *reply) {
     callSuccessful(reply);
+    emit executed();
 }

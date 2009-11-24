@@ -39,7 +39,7 @@
 #include "actions/reviews/CreateReviewAction.h"
 #include "actions/reviews/StartReviewAction.h"
 
-CrucibleConnector::CrucibleConnector( QObject *parent )
+CrucibleConnector::CrucibleConnector(QObject *parent)
     : CrucibleConnectorBase(parent)
     , m_review(0)
 {
@@ -56,28 +56,30 @@ RestCommunicator * CrucibleConnector::createCommunicator() {
 }
 
 void CrucibleConnector::updateReviewContent() {
+    RestCommunicator *communicator = createCommunicator();
+
     if (m_review->hasReviewers()) {
-        addReviewers();
+        m_actions.append(new AddReviewersAction(m_review, communicator, this));
     }
 //    if (m_review->hasUploads()) {
 //        addUploads();
 //    }
     if (m_review->hasChangesets()) {
-        addChangesets();
+        m_actions.append(new AddChangesetsAction(m_review, communicator, this));
     }
     if (m_review->hasPatches()) {
-        addPatches();
+        m_actions.append(new AddPatchesAction(m_review, communicator, this));
     }
     if (m_review->shouldStart()) {
-        startReview();
+        m_actions.append(new StartReviewAction(m_review, createCommunicator(), this));
     }
+
+    doActions();
 }
 
 void CrucibleConnector::createReview() {
     CreateReviewAction *a = new CreateReviewAction(m_review, createCommunicator(), this);
-
     connect(a, SIGNAL(reviewCreated()), this, SLOT(updateReviewContent()));
-
     a->run();
 }
 
@@ -86,47 +88,24 @@ void CrucibleConnector::updateReview() {
         error() << "Can't update a review without a PermaId";
         return;
     }
-
     updateReviewContent();
 }
 
-void CrucibleConnector::startReview() {
-    if (m_review->id().isEmpty()) {
-        error() << "Can't start a review without a PermaId";
+void CrucibleConnector::doActions() {
+    AbstractAction *lastAction = dynamic_cast<AbstractAction*>(sender());
+    if (lastAction) {
+        disconnect(lastAction, SIGNAL(executed()), this, SLOT(doActions()));
+    }
+
+    if (m_actions.isEmpty()) {
+        m_isExecuting = false;
         return;
     }
-    StartReviewAction *a = new StartReviewAction(m_review, createCommunicator(), this);
-    a->run();
+
+    m_isExecuting = true;
+
+    AbstractAction *action = m_actions.takeFirst();
+    connect(action, SIGNAL(executed()), this, SLOT(doActions()));
+    action->run();
 }
-
-void CrucibleConnector::addReviewers() {
-    if (m_review->id().isEmpty()) {
-        error() << "Can't update a review without a PermaId";
-        return;
-    }
-    AddReviewersAction *a = new AddReviewersAction(m_review, createCommunicator(), this);
-    a->run();
-}
-
-void CrucibleConnector::addChangesets() {
-    if (m_review->id().isEmpty()) {
-        error() << "Can't update a review without a PermaId";
-        return;
-    }
-    AddChangesetsAction *a = new AddChangesetsAction(m_review, createCommunicator(), this);
-    a->run();
-}
-
-void CrucibleConnector::addPatches() {
-    if (m_review->id().isEmpty()) {
-        error() << "Can't update a review without a PermaId";
-        return;
-    }
-    AddPatchesAction *a = new AddPatchesAction(m_review, createCommunicator(), this);
-    a->run();
-}
-
-
-
-
 

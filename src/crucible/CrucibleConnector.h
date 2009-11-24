@@ -35,7 +35,9 @@
 
 #include <QObject>
 #include <QNetworkReply>
+#include <QList>
 
+class AbstractAction;
 class Review;
 class RestCommunicator;
 
@@ -51,18 +53,18 @@ class CrucibleConnector : public CrucibleConnectorBase
         void createReview();
         void updateReview();
 
+        bool isExecuting() const { return m_isExecuting; }
+
     private slots:
         void updateReviewContent();
+        void doActions();
 
     private:
-        void addReviewers();
-        void startReview();
-        void addChangesets();
-        void addPatches();
-
         RestCommunicator *createCommunicator();
 
         Review *m_review;
+        QList<AbstractAction*> m_actions;
+        bool m_isExecuting;
 };
 
 #endif // CRUCIBLECONNECTOR_H
