@@ -35,7 +35,7 @@
 
 #include <QObject>
 #include <QNetworkReply>
-#include <QList>
+#include <QQueue>
 
 class AbstractAction;
 class Review;
@@ -63,7 +63,7 @@ class CrucibleConnector : public CrucibleConnectorBase
         RestCommunicator *createCommunicator();
 
         Review *m_review;
-        QList<AbstractAction*> m_actions;
+        QQueue<AbstractAction*> m_actions;
         bool m_isExecuting;
 };
 

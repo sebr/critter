@@ -59,19 +59,19 @@ void CrucibleConnector::updateReviewContent() {
     RestCommunicator *communicator = createCommunicator();
 
     if (m_review->hasReviewers()) {
-        m_actions.append(new AddReviewersAction(m_review, communicator, this));
+        m_actions.enqueue(new AddReviewersAction(m_review, communicator, this));
     }
 //    if (m_review->hasUploads()) {
 //        addUploads();
 //    }
     if (m_review->hasChangesets()) {
-        m_actions.append(new AddChangesetsAction(m_review, communicator, this));
+        m_actions.enqueue(new AddChangesetsAction(m_review, communicator, this));
     }
     if (m_review->hasPatches()) {
-        m_actions.append(new AddPatchesAction(m_review, communicator, this));
+        m_actions.enqueue(new AddPatchesAction(m_review, communicator, this));
     }
     if (m_review->shouldStart()) {
-        m_actions.append(new StartReviewAction(m_review, createCommunicator(), this));
+        m_actions.enqueue(new StartReviewAction(m_review, createCommunicator(), this));
     }
 
     doActions();
@@ -104,7 +104,7 @@ void CrucibleConnector::doActions() {
 
     m_isExecuting = true;
 
-    AbstractAction *action = m_actions.takeFirst();
+    AbstractAction *action = m_actions.dequeue();
     connect(action, SIGNAL(executed()), this, SLOT(doActions()));
     action->run();
 }
