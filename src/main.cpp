@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("atlassian.com");
     QCoreApplication::setApplicationName("Critter");
 
-
     // Read arguments
     po::options_description generic("General options");
     generic.add_options()
@@ -93,24 +92,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    bool showGui = argc == 1;
-
-    CrucibleConnectorBase *connector = new CrucibleConnectorBase();
-
-    if (vm.count("server")) {
-        showGui = true;
-        const QString server = QString::fromStdString(vm["server"].as<string>());
-        connector->setServer(server);
-    }
-
-    showGui = false;
+    bool showGui = false;
     if (showGui) {
-        MainWindow *w = new MainWindow(connector);
-        connector->setParent(w);
+        MainWindow *w = new MainWindow();
+        if (vm.count("server")) {
+            QString overrideServer = QString::fromStdString(vm["server"].as<string>());
+            //w->setServer(overrideServer);
+        }
         w->show();
     } else {
-        Critter *critter = new Critter(connector);
-        connector->setParent(critter);
+        Critter *critter = new Critter();
         critter->setOptions(vm);
         critter->exec();
     }

@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow {
         Q_OBJECT
 
     public:
-        MainWindow(CrucibleConnectorBase *connector, QWidget *parent = 0);
+        MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
     protected:

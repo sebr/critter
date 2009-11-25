@@ -31,8 +31,9 @@
 #ifndef CRUCIBLECONNECTORBASE_H
 #define CRUCIBLECONNECTORBASE_H
 
+#include "../Settings.h"
+
 #include <QObject>
-#include <QSettings>
 #include <QUrl>
 
 class CrucibleConnectorBase : public QObject
@@ -40,14 +41,12 @@ class CrucibleConnectorBase : public QObject
     Q_OBJECT
 
     public:
-        CrucibleConnectorBase(QObject *parent = 0)
+        CrucibleConnectorBase(Settings *settings, QObject *parent = 0)
             : QObject(parent)
         {
-            QSettings settings;
-
-            setServer( settings.value("crucible/server", "http://stella:6060/crucible").toString() );
-            m_user = settings.value("crucible/username", "sruiz").toString();
-            m_password = settings.value("crucible/password", "password").toString();
+            setServer(settings->server());
+            m_user = settings->username();
+            m_password = settings->password();
         }
 
         void setServer(const QString &server) {

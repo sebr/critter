@@ -32,6 +32,7 @@
 #include "CrucibleConnector.h"
 #include "rest/Communicators.h"
 #include "Review.h"
+#include "../Settings.h"
 
 #include "actions/reviews/AddChangesetsAction.h"
 #include "actions/reviews/AddPatchesAction.h"
@@ -39,46 +40,35 @@
 #include "actions/reviews/CreateReviewAction.h"
 #include "actions/reviews/StartReviewAction.h"
 
-CrucibleConnector::CrucibleConnector(QObject *parent)
-    : CrucibleConnectorBase(parent)
+CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
+    : CrucibleConnectorBase(settings, parent)
     , m_review(0)
 {
-}
-
-RestCommunicator * CrucibleConnector::createCommunicator() {
-    RestCommunicator *communicator = new ReviewsCommunicator(this);
-
-    communicator->setServer(m_server);
-    communicator->setUser(m_user);
-    communicator->setPassword(m_password);
-
-    return communicator;
+    m_communicator = new ReviewsCommunicator(this);
+    m_communicator->setServer(server());
+    m_communicator->setUser(user());
+    m_communicator->setPassword(password());
 }
 
 void CrucibleConnector::updateReviewContent() {
-    RestCommunicator *communicator = createCommunicator();
-
     if (m_review->hasReviewers()) {
-        m_actions.enqueue(new AddReviewersAction(m_review, communicator, this));
+        m_actions.enqueue(new AddReviewersAction(m_review, m_communicator, this));
     }
-//    if (m_review->hasUploads()) {
-//        addUploads();
-//    }
     if (m_review->hasChangesets()) {
-        m_actions.enqueue(new AddChangesetsAction(m_review, communicator, this));
+        m_actions.enqueue(new AddChangesetsAction(m_review, m_communicator, this));
     }
     if (m_review->hasPatches()) {
-        m_actions.enqueue(new AddPatchesAction(m_review, communicator, this));
+        m_actions.enqueue(new AddPatchesAction(m_review, m_communicator, this));
     }
     if (m_review->shouldStart()) {
-        m_actions.enqueue(new StartReviewAction(m_review, createCommunicator(), this));
+        m_actions.enqueue(new StartReviewAction(m_review, m_communicator, this));
     }
 
     doActions();
 }
 
 void CrucibleConnector::createReview() {
-    CreateReviewAction *a = new CreateReviewAction(m_review, createCommunicator(), this);
+    CreateReviewAction *a = new CreateReviewAction(m_review, m_communicator, this);
     connect(a, SIGNAL(reviewCreated()), this, SLOT(updateReviewContent()));
     a->run();
 }

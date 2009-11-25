@@ -30,6 +30,7 @@
 
 #include "Critter.h"
 #include "Debug.h"
+#include "Settings.h"
 
 #include "crucible/CrucibleConnector.h"
 #include "crucible/Review.h"
@@ -52,12 +53,8 @@ Critter::Critter(QObject *parent)
     : QObject(parent)
     , m_crucibleConnector(0)
 {
-}
-
-Critter::Critter(CrucibleConnectorBase *connector, QObject *parent)
-    : QObject(parent)
-{
-    m_crucibleConnector = new CrucibleConnector(connector);
+    Settings *settings = new Settings(this);
+    m_crucibleConnector = new CrucibleConnector(settings, this);
 }
 
 void Critter::setOptions(po::variables_map vm) {
@@ -86,6 +83,11 @@ void Critter::parseOptions() {
         error() << "You can't create and update a review at the same time!";
         qApp->quit();
         return;
+    }
+
+    if (m_vm.count("server")) {
+        QString overrideServer = QString::fromStdString(m_vm["server"].as<string>());
+        m_crucibleConnector->setServer(overrideServer);
     }
 
     Review *review = new Review(this);

@@ -32,10 +32,11 @@
 #include "ui_MainWindow.h"
 
 #include "../Debug.h"
+#include "../Settings.h"
 #include "../crucible/Project.h"
 #include "../crucible/Repository.h"
 #include "../crucible/User.h"
-#include "../crucible/CrucibleConnectorBase.h"
+#include "../crucible/CrucibleConnector.h"
 #include "../crucible/actions/projects/LoadProjectsAction.h"
 #include "../crucible/actions/repositories/LoadRepositoriesAction.h"
 #include "../crucible/actions/users/LoadUsersAction.h"
@@ -47,12 +48,13 @@ Q_DECLARE_METATYPE(Project*)
 Q_DECLARE_METATYPE(Repository*)
 Q_DECLARE_METATYPE(User*)
 
-MainWindow::MainWindow(CrucibleConnectorBase *connector, QWidget *parent) :
+MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
     , m_ui(new Ui::MainWindow)
     , m_critter(new Critter(this))
-    , m_connector(connector)
 {
+    Settings *settings = new Settings(this);
+    m_connector = new CrucibleConnector(settings, this);
     m_ui->setupUi(this);
 
     connect(m_ui->actionQuit, SIGNAL(triggered()), qApp, SLOT(quit()));

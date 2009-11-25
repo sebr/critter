@@ -40,13 +40,14 @@
 class AbstractAction;
 class Review;
 class RestCommunicator;
+class Settings;
 
 class CrucibleConnector : public CrucibleConnectorBase
 {
     Q_OBJECT
 
     public:
-        CrucibleConnector(QObject *parent);
+        CrucibleConnector(Settings *settings, QObject *parent);
 
         void setReview(Review *review) { m_review = review; }
 
@@ -60,7 +61,7 @@ class CrucibleConnector : public CrucibleConnectorBase
         void doActions();
 
     private:
-        RestCommunicator *createCommunicator();
+        RestCommunicator *m_communicator;
 
         Review *m_review;
         QQueue<AbstractAction*> m_actions;

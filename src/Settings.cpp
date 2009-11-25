@@ -28,39 +28,32 @@
  **
  ****************************************************************************/
 
-#ifndef CRITTER_H
-#define CRITTER_H
+#include "Settings.h"
 
-#include <QObject>
+#include <QApplication>
 
-#include <boost/program_options.hpp>
-
-namespace po = boost::program_options;
-
-class CrucibleConnector;
-class Review;
-
-class Critter : public QObject
+Settings::Settings(QObject *parent)
+    : QObject(parent)
 {
-    Q_OBJECT
+    m_settings = new QSettings(qApp->organizationName(), qApp->applicationName());
+    readSettings();
+}
 
-    public:
-        Critter(QObject *parent = 0);
-        void setOptions(po::variables_map vm);
+void Settings::readSettings() {
+    m_settings->beginGroup("connector");
+    m_server = m_settings->value("server", "").toString();
+    m_username = m_settings->value("username", "").toString();
+    m_password = m_settings->value("password", "").toString();
+    m_settings->endGroup();
+}
 
-    public slots:
-        void exec();
+void Settings::saveSettings() const {
+    m_settings->beginGroup("connector");
+    m_settings->setValue("server", m_server);
+    m_settings->setValue("username", m_username);
+    m_settings->setValue("password", m_password);
+    m_settings->endGroup();
+}
 
-    private slots:
-        void parseOptions();
 
-    private:
-        QByteArray loadPatch(const QString &filename) const;
-        void readStdIn(Review *review);
-        void testConnection();
 
-        CrucibleConnector *m_crucibleConnector;
-        po::variables_map m_vm;
-};
-
-#endif // CRITTER_H
