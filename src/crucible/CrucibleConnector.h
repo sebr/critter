@@ -39,7 +39,6 @@
 
 class AbstractAction;
 class Review;
-class RestCommunicator;
 class Settings;
 
 class CrucibleConnector : public CrucibleConnectorBase
@@ -61,8 +60,6 @@ class CrucibleConnector : public CrucibleConnectorBase
         void doActions();
 
     private:
-        RestCommunicator *m_communicator;
-
         Review *m_review;
         QQueue<AbstractAction*> m_actions;
         bool m_isExecuting;

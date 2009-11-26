@@ -87,6 +87,7 @@ void Critter::parseOptions() {
 
     if (m_vm.count("server")) {
         QString overrideServer = QString::fromStdString(m_vm["server"].as<string>());
+        debug() << "Server override:" << overrideServer;
         m_crucibleConnector->setServer(overrideServer);
     }
 
