@@ -20,6 +20,7 @@ SOURCES += src/main.cpp \
     src/crucible/actions/reviews/AddChangesetsAction.cpp \
     src/crucible/actions/reviews/AddPatchesAction.cpp \
     src/ui/MainWindow.cpp \
+    src/crucible/actions/fisheye/FishEyeChangesetWaitingAction.cpp \
     src/crucible/actions/projects/LoadProjectsAction.cpp \
     src/crucible/actions/repositories/LoadRepositoriesAction.cpp \
     src/crucible/actions/users/LoadUsersAction.cpp \
@@ -37,6 +38,7 @@ HEADERS += src/Critter.h \
     src/crucible/actions/reviews/AddPatchesAction.h \
     src/crucible/actions/projects/LoadProjectsAction.h \
     src/crucible/actions/reviews/AbstractReviewAction.h \
+    src/crucible/actions/fisheye/FishEyeChangesetWaitingAction.h \
     src/crucible/actions/repositories/LoadRepositoriesAction.h \
     src/ui/MainWindow.h \
     src/crucible/CrucibleConnectorBase.h \

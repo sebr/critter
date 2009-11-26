@@ -35,6 +35,17 @@
 
 #include <QUrl>
 
+class FishEyeChangesetCommunicator : public RestCommunicator
+{
+    public:
+        FishEyeChangesetCommunicator(QObject *parent) : RestCommunicator(parent) {}
+
+    protected:
+        virtual QUrl apiUrl(const QString &path = QString()) const {
+            return QUrl(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/" + path);
+        }
+};
+
 class ProjectsCommunicator : public RestCommunicator
 {
     public:

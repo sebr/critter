@@ -39,6 +39,7 @@
 #include "actions/reviews/AddReviewersAction.h"
 #include "actions/reviews/CreateReviewAction.h"
 #include "actions/reviews/StartReviewAction.h"
+#include "actions/fisheye/FishEyeChangesetWaitingAction.h"
 
 CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
     : CrucibleConnectorBase(settings, parent)
@@ -55,6 +56,12 @@ void CrucibleConnector::updateReviewContent() {
         m_actions.enqueue(new AddReviewersAction(m_review, m_communicator, this));
     }
     if (m_review->hasChangesets()) {
+        FishEyeChangesetCommunicator *fisheyeCommunicator = new FishEyeChangesetCommunicator(this);
+        fisheyeCommunicator->setServer(server());
+        fisheyeCommunicator->setUser(user());
+        fisheyeCommunicator->setPassword(password());
+
+        m_actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), fisheyeCommunicator, this));
         m_actions.enqueue(new AddChangesetsAction(m_review, m_communicator, this));
     }
     if (m_review->hasPatches()) {
