@@ -60,6 +60,9 @@ class CrucibleConnectorBase : public QObject
         QString user() const { return m_user; }
         QString password() const { return m_password; }
 
+    signals:
+        void finished();
+
     protected:
         QUrl m_server;
         QString m_user;

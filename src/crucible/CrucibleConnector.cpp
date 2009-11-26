@@ -96,6 +96,7 @@ void CrucibleConnector::doActions() {
 
     if (m_actions.isEmpty()) {
         m_isExecuting = false;
+        emit finished();
         return;
     }
 

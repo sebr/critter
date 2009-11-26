@@ -176,8 +176,7 @@ void Critter::parseOptions() {
     } else if (isUpdateReview) {
         m_crucibleConnector->updateReview();
     }
-    debug() << "All done, going to quit now...";
-    qApp->quit();
+    connect(m_crucibleConnector, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
 void Critter::testConnection() {
