@@ -47,11 +47,15 @@ CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
 {
 }
 
-void CrucibleConnector::updateReviewContent() {
+void CrucibleConnector::updateReviewContent(bool createReview) {
     ReviewsCommunicator *communicator = new ReviewsCommunicator(this);
     communicator->setServer(server());
     communicator->setUser(user());
     communicator->setPassword(password());
+
+    if (createReview) {
+        m_actions.enqueue(new CreateReviewAction(m_review, communicator, this));
+    }
 
     if (m_review->hasReviewers()) {
         m_actions.enqueue(new AddReviewersAction(m_review, communicator, this));
@@ -76,14 +80,7 @@ void CrucibleConnector::updateReviewContent() {
 }
 
 void CrucibleConnector::createReview() {
-    ReviewsCommunicator *communicator = new ReviewsCommunicator(this);
-    communicator->setServer(server());
-    communicator->setUser(user());
-    communicator->setPassword(password());
-
-    CreateReviewAction *a = new CreateReviewAction(m_review, communicator, this);
-    connect(a, SIGNAL(reviewCreated()), this, SLOT(updateReviewContent()));
-    a->run();
+    updateReviewContent(true);
 }
 
 void CrucibleConnector::updateReview() {
@@ -95,9 +92,17 @@ void CrucibleConnector::updateReview() {
 }
 
 void CrucibleConnector::doActions() {
+    DEBUG_BLOCK
     AbstractAction *lastAction = dynamic_cast<AbstractAction*>(sender());
     if (lastAction) {
         disconnect(lastAction, SIGNAL(executed()), this, SLOT(doActions()));
+        if (!lastAction->successful()) {
+            debug() << "call failed";
+            m_isExecuting = false;
+            m_actions.clear();
+            emit finished();
+            return;
+        }
     }
 
     if (m_actions.isEmpty()) {

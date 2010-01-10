@@ -45,6 +45,7 @@ class AbstractAction : public QObject
         virtual ~AbstractAction() {}
 
         virtual void run() = 0;
+        virtual bool successful();
 
     signals:
         void executed();
@@ -60,6 +61,7 @@ class AbstractAction : public QObject
         virtual void callSuccessful(QNetworkReply *reply) = 0;
 
         RestCommunicator *m_communicator;
+        bool m_successful;
 };
 
 #endif // ABSTRACTACTION_H

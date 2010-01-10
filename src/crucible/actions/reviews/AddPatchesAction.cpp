@@ -58,7 +58,7 @@ void AddPatchesAction::doPatchQueue() {
 }
 
 void AddPatchesAction::callFailed(QNetworkReply *reply) {
-    debug() << "Could not add changesets to" << m_review->id() << ":" << reply->errorString();
+    debug() << "Could not add patches to" << m_review->id() << ":" << reply->errorString();
 }
 
 void AddPatchesAction::callSuccessful(QNetworkReply *) {

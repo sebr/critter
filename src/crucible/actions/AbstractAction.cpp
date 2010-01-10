@@ -37,6 +37,7 @@
 AbstractAction::AbstractAction(RestCommunicator *communicator, QObject *parent)
     : QObject(parent)
     , m_communicator(communicator)
+    , m_successful(false)
 {
     init();
 }
@@ -48,12 +49,18 @@ void AbstractAction::init() {
             this, SLOT(callFailedSlot(QNetworkReply*)));
 }
 
+bool AbstractAction::successful() {
+    return m_successful;
+}
+
 void AbstractAction::callFailedSlot(QNetworkReply *reply) {
+    m_successful = false;
     callFailed(reply);
     emit executed();
 }
 
 void AbstractAction::callSuccessfulSlot(QNetworkReply *reply) {
+    m_successful = true;
     callSuccessful(reply);
     emit executed();
 }
