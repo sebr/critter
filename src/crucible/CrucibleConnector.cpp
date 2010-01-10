@@ -33,6 +33,7 @@
 #include "rest/Communicators.h"
 #include "Review.h"
 #include "../Settings.h"
+#include "dispatcher/SynchronousJobDispatcher.h"
 
 #include "actions/reviews/AddChangesetsAction.h"
 #include "actions/reviews/AddPatchesAction.h"
@@ -41,42 +42,12 @@
 #include "actions/reviews/StartReviewAction.h"
 #include "actions/fisheye/FishEyeChangesetWaitingAction.h"
 
+#include <QQueue>
+
 CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
     : CrucibleConnectorBase(settings, parent)
     , m_review(0)
 {
-}
-
-void CrucibleConnector::updateReviewContent(bool createReview) {
-    ReviewsCommunicator *communicator = new ReviewsCommunicator(this);
-    communicator->setServer(server());
-    communicator->setUser(user());
-    communicator->setPassword(password());
-
-    if (createReview) {
-        m_actions.enqueue(new CreateReviewAction(m_review, communicator, this));
-    }
-
-    if (m_review->hasReviewers()) {
-        m_actions.enqueue(new AddReviewersAction(m_review, communicator, this));
-    }
-    if (m_review->hasChangesets()) {
-        FishEyeChangesetCommunicator *fisheyeCommunicator = new FishEyeChangesetCommunicator(this);
-        fisheyeCommunicator->setServer(server());
-        fisheyeCommunicator->setUser(user());
-        fisheyeCommunicator->setPassword(password());
-
-        m_actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), fisheyeCommunicator, this));
-        m_actions.enqueue(new AddChangesetsAction(m_review, communicator, this));
-    }
-    if (m_review->hasPatches()) {
-        m_actions.enqueue(new AddPatchesAction(m_review, communicator, this));
-    }
-    if (m_review->shouldStart()) {
-        m_actions.enqueue(new StartReviewAction(m_review, communicator, this));
-    }
-
-    doActions();
 }
 
 void CrucibleConnector::createReview() {
@@ -91,28 +62,37 @@ void CrucibleConnector::updateReview() {
     updateReviewContent();
 }
 
-void CrucibleConnector::doActions() {
-    AbstractAction *lastAction = dynamic_cast<AbstractAction*>(sender());
-    if (lastAction) {
-        disconnect(lastAction, SIGNAL(executed()), this, SLOT(doActions()));
-        if (!lastAction->successful()) {
-            m_isExecuting = false;
-            m_actions.clear();
-            emit finished();
-            return;
-        }
+void CrucibleConnector::updateReviewContent(bool createReview) {
+    ReviewsCommunicator *communicator = new ReviewsCommunicator(this);
+    communicator->setServer(server());
+    communicator->setUser(user());
+    communicator->setPassword(password());
+
+    QQueue<AbstractAction*> actions;
+
+    if (createReview) {
+        actions.enqueue(new CreateReviewAction(m_review, communicator, this));
     }
 
-    if (m_actions.isEmpty()) {
-        m_isExecuting = false;
-        emit finished();
-        return;
+    if (m_review->hasReviewers()) {
+        actions.enqueue(new AddReviewersAction(m_review, communicator, this));
+    }
+    if (m_review->hasChangesets()) {
+        FishEyeChangesetCommunicator *fisheyeCommunicator = new FishEyeChangesetCommunicator(this);
+        fisheyeCommunicator->setServer(server());
+        fisheyeCommunicator->setUser(user());
+        fisheyeCommunicator->setPassword(password());
+
+        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), fisheyeCommunicator, this));
+        actions.enqueue(new AddChangesetsAction(m_review, communicator, this));
+    }
+    if (m_review->hasPatches()) {
+        actions.enqueue(new AddPatchesAction(m_review, communicator, this));
+    }
+    if (m_review->shouldStart()) {
+        actions.enqueue(new StartReviewAction(m_review, communicator, this));
     }
 
-    m_isExecuting = true;
-
-    AbstractAction *action = m_actions.dequeue();
-    connect(action, SIGNAL(executed()), this, SLOT(doActions()));
-    action->run();
+    (new SynchronousJobDispatcher(actions, this))->execute();
 }
 

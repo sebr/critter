@@ -35,9 +35,7 @@
 
 #include <QObject>
 #include <QNetworkReply>
-#include <QQueue>
 
-class AbstractAction;
 class Review;
 class Settings;
 
@@ -55,14 +53,10 @@ class CrucibleConnector : public CrucibleConnectorBase
 
         bool isExecuting() const { return m_isExecuting; }
 
-    private slots:
-        void doActions();
-
     private:
         void updateReviewContent(bool createReview = false);
 
         Review *m_review;
-        QQueue<AbstractAction*> m_actions;
         bool m_isExecuting;
 };
 

@@ -24,7 +24,8 @@ SOURCES += src/main.cpp \
     src/crucible/actions/projects/LoadProjectsAction.cpp \
     src/crucible/actions/repositories/LoadRepositoriesAction.cpp \
     src/crucible/actions/users/LoadUsersAction.cpp \
-    src/Settings.cpp
+    src/Settings.cpp \
+    src/crucible/dispatcher/SynchronousJobDispatcher.cpp
 HEADERS += src/Critter.h \
     src/Debug.h \
     src/crucible/CrucibleConnector.h \
@@ -47,7 +48,8 @@ HEADERS += src/Critter.h \
     src/crucible/rest/Communicators.h \
     src/crucible/actions/users/LoadUsersAction.h \
     src/crucible/User.h \
-    src/Settings.h
+    src/Settings.h \
+    src/crucible/dispatcher/SynchronousJobDispatcher.h
 macx:LIBS += -lboost_program_options-mt
 else:LIBS += -lboost_program_options
 MOC_DIR = build
