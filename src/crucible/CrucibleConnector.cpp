@@ -92,12 +92,10 @@ void CrucibleConnector::updateReview() {
 }
 
 void CrucibleConnector::doActions() {
-    DEBUG_BLOCK
     AbstractAction *lastAction = dynamic_cast<AbstractAction*>(sender());
     if (lastAction) {
         disconnect(lastAction, SIGNAL(executed()), this, SLOT(doActions()));
         if (!lastAction->successful()) {
-            debug() << "call failed";
             m_isExecuting = false;
             m_actions.clear();
             emit finished();
