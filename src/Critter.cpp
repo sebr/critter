@@ -214,7 +214,7 @@ void Critter::readStdIn(Review *review) {
     QByteArray ba;
 
     bool isPatch = false;
-    QString commitRevision = false;
+    QString commitRevision;
     bool firstLine = true;
 
     while (!std::getline(std::cin, input_line).eof()) {
