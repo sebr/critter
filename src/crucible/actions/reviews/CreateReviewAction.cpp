@@ -40,7 +40,7 @@ void CreateReviewAction::run() {
 }
 
 void CreateReviewAction::callFailed(QNetworkReply *reply) {
-    debug() << "Could not create review at" << m_communicator->server() << ":" << reply->errorString();
+    debug() << "Could not create review at" << m_communicator->server().toString(QUrl::RemoveUserInfo) << ":" << reply->errorString();
 }
 
 void CreateReviewAction::callSuccessful(QNetworkReply *reply) {
