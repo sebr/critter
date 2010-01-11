@@ -50,8 +50,7 @@ HEADERS += src/Critter.h \
     src/crucible/User.h \
     src/Settings.h \
     src/crucible/dispatcher/SynchronousJobDispatcher.h
-macx:LIBS += -lboost_program_options-mt
-else:LIBS += -lboost_program_options
+LIBS += -lboost_program_options-mt
 MOC_DIR = build
 OBJECTS_DIR = build
 UI_DIR = build
