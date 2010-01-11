@@ -70,26 +70,14 @@ void Critter::exec() {
 
 void Critter::parseOptions() {
     if (!m_crucibleConnector) {
-        warning() << "No crucible connector!";
+        error() << "No crucible connector!";
         qApp->quit();
         return;
     }
 
+    bool readFromStdIn = true;
     const bool isCreateReview = m_vm.count("create");
     const bool isUpdateReview = m_vm.count("update");
-    bool readFromStdIn = true;
-
-    if (isCreateReview && isUpdateReview) {
-        error() << "You can't create and update a review at the same time!";
-        qApp->quit();
-        return;
-    }
-
-    if (!isCreateReview && !isUpdateReview) {
-        error() << "Require either reate or update option";
-        qApp->quit();
-        return;
-    }
 
     if (m_vm.count("server")) {
         QString overrideServer = QString::fromStdString(m_vm["server"].as<string>());
@@ -195,7 +183,7 @@ QByteArray Critter::loadPatch(const QString &filename) const
 {
     QFileInfo fi(QDir::current(), filename);
 
-    debug() << "loading patch data from" << fi.filePath();
+//      debug() << "loading patch data from" << fi.filePath();
 
     QFile patch(fi.filePath());
 

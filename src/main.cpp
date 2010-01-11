@@ -56,36 +56,46 @@ int main(int argc, char *argv[])
         ("debug,d", "enable debug output")
         ;
 
-    po::options_description config("Configuration options");
+    po::options_description main("Mandatory options");
+    main.add_options()
+        ("create,c", "creating a review")
+        ("update,u", po::value<string>(), "the review to update. if not specified, a new review is created")
+        ;
+
+    po::options_description config("Crucible options");
     config.add_options()
         ("server,S", po::value<string>(), "crucible server")
-        ("create,c", "creating a review")
-        ("start,s", "start the review")
-        ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
-        ("patch,p", po::value<string>(), "patch to upload to the specified review")
-        ("update,u", po::value<string>(), "the review to update. if not specified, a new review is created")
         ;
 
     po::options_description review("Review options");
     review.add_options()
+        ("start,s", "start the review")
+        ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
+        ("patch,p", po::value<string>(), "patch to upload to the specified review")
         ("title", po::value<string>(), "the review title")
         ("objectives", po::value<string>(), "the review objectives")
         ("author", po::value<string>(), "when creating, the author of the review")
         ("creator", po::value<string>(), "when creating, the creator of the review (if not set, defaults to author)")
         ("moderator", po::value<string>(), "when creating, the moderator of the review (if not set, defaults to author)")
-        ("project", po::value<string>(), "when creating, the project to add the review to. Defaults to \"CR\"")
+        ("project", po::value<string>(), "when creating, the project to add the review to (if not set, defaults to \"CR\")")
         ("repository", po::value<string>(), "the repository for changesets")
         ("reviewers", po::value< vector<string> >()->multitoken(), "list of reviewers for the review")
         ;
 
     po::options_description visible("Allowed options");
-    visible.add(generic).add(config).add(review);
+    visible.add(generic).add(main).add(config).add(review);
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, visible), vm);
     po::notify(vm);
 
-    if (vm.count("help")) {
+    const bool isCreateReview = vm.count("create");
+    const bool isUpdateReview = vm.count("update");
+    const bool showHelp = vm.count("help") ||
+                          (isCreateReview && isUpdateReview) ||
+                          (!isCreateReview && !isUpdateReview);
+
+    if (showHelp) {
         std::cout << visible << "\n";
         a.exit(1);
         return 1;
