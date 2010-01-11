@@ -86,8 +86,15 @@ int main(int argc, char *argv[])
     visible.add(generic).add(main).add(config).add(review);
 
     po::variables_map vm;
-    po::store(po::parse_command_line(argc, argv, visible), vm);
-    po::notify(vm);
+    try {
+        po::store(po::parse_command_line(argc, argv, visible), vm);
+        po::notify(vm);
+    } catch (exception) {
+        std::cout << "Invalid arguments\n\n"
+                  << visible << "\n";
+        a.exit(1);
+        return 1;
+    }
 
     const bool isCreateReview = vm.count("create");
     const bool isUpdateReview = vm.count("update");
