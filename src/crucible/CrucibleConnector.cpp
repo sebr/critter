@@ -84,7 +84,7 @@ void CrucibleConnector::updateReviewContent(bool createReview) {
     }
 
     SynchronousJobDispatcher *dispatcher = new SynchronousJobDispatcher(actions, this);
-    connect(dispatcher, SIGNAL(finished()), this, SLOT(deleteLater()));
+    connect(dispatcher, SIGNAL(finished()), this, SIGNAL(finished()));
     dispatcher->execute();
 }
 
