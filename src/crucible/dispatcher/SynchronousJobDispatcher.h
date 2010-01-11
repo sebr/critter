@@ -13,12 +13,13 @@ class SynchronousJobDispatcher : public QObject
     public:
         explicit SynchronousJobDispatcher(QQueue<AbstractAction*> actions, QObject *parent = 0);
 
+    signals:
+        void finished();
+
     public slots:
         void execute();
 
-    private:
-        void finished();
-
+    public:
         QQueue<AbstractAction*> m_actions;
 };
 

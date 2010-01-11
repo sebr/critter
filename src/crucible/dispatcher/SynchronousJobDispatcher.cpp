@@ -8,23 +8,19 @@ SynchronousJobDispatcher::SynchronousJobDispatcher(QQueue<AbstractAction*> actio
 {
 }
 
-void SynchronousJobDispatcher::finished() {
-    // do something
-}
-
 void SynchronousJobDispatcher::execute() {
     AbstractAction *lastAction = dynamic_cast<AbstractAction*>(sender());
     if (lastAction) {
         disconnect(lastAction, SIGNAL(executed()), this, SLOT(execute()));
         if (!lastAction->successful()) {
             m_actions.clear();
-            finished();
+            emit finished();
             return;
         }
     }
 
     if (m_actions.isEmpty()) {
-        finished();
+        emit finished();
         return;
     }
 

@@ -63,36 +63,43 @@ void CrucibleConnector::updateReview() {
 }
 
 void CrucibleConnector::updateReviewContent(bool createReview) {
+    QQueue<AbstractAction*> actions;
+
+    if (createReview) {
+        actions.enqueue(new CreateReviewAction(m_review, createReviewsCommunicator(), this));
+    }
+
+    if (m_review->hasReviewers()) {
+        actions.enqueue(new AddReviewersAction(m_review, createReviewsCommunicator(), this));
+    }
+    if (m_review->hasChangesets()) {
+        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), createFishEyeCommunicator(), this));
+        actions.enqueue(new AddChangesetsAction(m_review, createReviewsCommunicator(), this));
+    }
+    if (m_review->hasPatches()) {
+        actions.enqueue(new AddPatchesAction(m_review, createReviewsCommunicator(), this));
+    }
+    if (m_review->shouldStart()) {
+        actions.enqueue(new StartReviewAction(m_review, createReviewsCommunicator(), this));
+    }
+
+    SynchronousJobDispatcher *dispatcher = new SynchronousJobDispatcher(actions, this);
+    connect(dispatcher, SIGNAL(finished()), this, SLOT(deleteLater()));
+    dispatcher->execute();
+}
+
+FishEyeChangesetCommunicator* CrucibleConnector::createFishEyeCommunicator() {
+    FishEyeChangesetCommunicator *fisheyeCommunicator = new FishEyeChangesetCommunicator(this);
+    fisheyeCommunicator->setServer(server());
+    fisheyeCommunicator->setUser(user());
+    fisheyeCommunicator->setPassword(password());
+    return fisheyeCommunicator;
+}
+
+ReviewsCommunicator* CrucibleConnector::createReviewsCommunicator() {
     ReviewsCommunicator *communicator = new ReviewsCommunicator(this);
     communicator->setServer(server());
     communicator->setUser(user());
     communicator->setPassword(password());
-
-    QQueue<AbstractAction*> actions;
-
-    if (createReview) {
-        actions.enqueue(new CreateReviewAction(m_review, communicator, this));
-    }
-
-    if (m_review->hasReviewers()) {
-        actions.enqueue(new AddReviewersAction(m_review, communicator, this));
-    }
-    if (m_review->hasChangesets()) {
-        FishEyeChangesetCommunicator *fisheyeCommunicator = new FishEyeChangesetCommunicator(this);
-        fisheyeCommunicator->setServer(server());
-        fisheyeCommunicator->setUser(user());
-        fisheyeCommunicator->setPassword(password());
-
-        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), fisheyeCommunicator, this));
-        actions.enqueue(new AddChangesetsAction(m_review, communicator, this));
-    }
-    if (m_review->hasPatches()) {
-        actions.enqueue(new AddPatchesAction(m_review, communicator, this));
-    }
-    if (m_review->shouldStart()) {
-        actions.enqueue(new StartReviewAction(m_review, communicator, this));
-    }
-
-    (new SynchronousJobDispatcher(actions, this))->execute();
+    return communicator;
 }
-

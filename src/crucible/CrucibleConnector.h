@@ -37,6 +37,8 @@
 #include <QNetworkReply>
 
 class Review;
+class ReviewsCommunicator;
+class FishEyeChangesetCommunicator;
 class Settings;
 
 class CrucibleConnector : public CrucibleConnectorBase
@@ -51,9 +53,10 @@ class CrucibleConnector : public CrucibleConnectorBase
         void createReview();
         void updateReview();
 
-        bool isExecuting() const { return m_isExecuting; }
-
     private:
+        ReviewsCommunicator *createReviewsCommunicator();
+        FishEyeChangesetCommunicator *createFishEyeCommunicator();
+
         void updateReviewContent(bool createReview = false);
 
         Review *m_review;
