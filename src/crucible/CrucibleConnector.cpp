@@ -65,6 +65,12 @@ void CrucibleConnector::updateReview() {
 void CrucibleConnector::updateReviewContent(bool createReview) {
     QQueue<AbstractAction*> actions;
 
+    // If the review has changesets, make sure that FishEye knows about them before creating the review
+    // otherwise we could end up with empty reviews.
+    if (m_review->hasChangesets()) {
+        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), createFishEyeCommunicator(), this));
+    }
+
     if (createReview) {
         actions.enqueue(new CreateReviewAction(m_review, createReviewsCommunicator(), this));
     }
@@ -73,7 +79,6 @@ void CrucibleConnector::updateReviewContent(bool createReview) {
         actions.enqueue(new AddReviewersAction(m_review, createReviewsCommunicator(), this));
     }
     if (m_review->hasChangesets()) {
-        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), createFishEyeCommunicator(), this));
         actions.enqueue(new AddChangesetsAction(m_review, createReviewsCommunicator(), this));
     }
     if (m_review->hasPatches()) {
