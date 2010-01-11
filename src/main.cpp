@@ -32,7 +32,6 @@
 #include "crucible/CrucibleConnectorBase.h"
 #include "ui/MainWindow.h"
 
-#include <QApplication>
 #include <QCoreApplication>
 #include <QDebug>
 
@@ -44,7 +43,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QCoreApplication a(argc, argv);
 
     QCoreApplication::setOrganizationName("Atlassian");
     QCoreApplication::setOrganizationDomain("atlassian.com");
@@ -92,19 +91,19 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    bool showGui = false;
-    if (showGui) {
-        MainWindow *w = new MainWindow();
-        if (vm.count("server")) {
-            QString overrideServer = QString::fromStdString(vm["server"].as<string>());
+//    bool showGui = false;
+//    if (showGui) {
+//        MainWindow *w = new MainWindow();
+//        if (vm.count("server")) {
+//            QString overrideServer = QString::fromStdString(vm["server"].as<string>());
             //w->setServer(overrideServer);
-        }
-        w->show();
-    } else {
+//        }
+//        w->show();
+//    } else {
         Critter *critter = new Critter();
         critter->setOptions(vm);
         critter->exec();
-    }
+//    }
 
     return a.exec();
 }

@@ -2,8 +2,8 @@
 # Project created by QtCreator 2009-08-12T19:39:22
 # -------------------------------------------------
 QT += network \
-    xml \
-    gui
+#    gui
+    xml
 TARGET = critter
 CONFIG += console
 CONFIG -= app_bundle
@@ -19,7 +19,7 @@ SOURCES += src/main.cpp \
     src/crucible/actions/reviews/StartReviewAction.cpp \
     src/crucible/actions/reviews/AddChangesetsAction.cpp \
     src/crucible/actions/reviews/AddPatchesAction.cpp \
-    src/ui/MainWindow.cpp \
+#    src/ui/MainWindow.cpp \
     src/crucible/actions/fisheye/FishEyeChangesetWaitingAction.cpp \
     src/crucible/actions/projects/LoadProjectsAction.cpp \
     src/crucible/actions/repositories/LoadRepositoriesAction.cpp \
@@ -41,7 +41,7 @@ HEADERS += src/Critter.h \
     src/crucible/actions/reviews/AbstractReviewAction.h \
     src/crucible/actions/fisheye/FishEyeChangesetWaitingAction.h \
     src/crucible/actions/repositories/LoadRepositoriesAction.h \
-    src/ui/MainWindow.h \
+#    src/ui/MainWindow.h \
     src/crucible/CrucibleConnectorBase.h \
     src/crucible/Project.h \
     src/crucible/Repository.h \
