@@ -38,15 +38,22 @@
 FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(QStringList changesets, RestCommunicator *communicator, QObject *parent)
     : AbstractAction(communicator, parent)
     , m_changesets(changesets)
+    , m_attempts(0)
 {
 }
 
 void FishEyeChangesetWaitingAction::run() {
+    m_attempts++;
+    // TODO get all of the changesets
     m_communicator->get(m_changesets.first());
 }
 
 void FishEyeChangesetWaitingAction::callFailed(QNetworkReply *reply) {
-    debug() << "Could not changeset from" << m_communicator->server().toString() << ":" << reply->errorString();
+    if (reply->error() == QNetworkReply::ContentNotFoundError && m_attempts < MAX_ATTEMPTS) {
+        run(); // try and try again.
+    } else {
+        debug() << "Could not find changeset at " << m_communicator->server().toString() << ":" << reply->errorString();
+    }
 }
 
 void FishEyeChangesetWaitingAction::callSuccessful(QNetworkReply *reply) {

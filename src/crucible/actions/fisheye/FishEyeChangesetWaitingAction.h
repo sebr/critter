@@ -51,7 +51,9 @@ class FishEyeChangesetWaitingAction : public AbstractAction
         virtual void callFailed(QNetworkReply *reply);
         virtual void callSuccessful(QNetworkReply *reply);
 
+        const static int MAX_ATTEMPTS = 10;
         QStringList m_changesets;
+        int m_attempts;
 };
 
 #endif // FISHEYECHANGESETWAITINGACTION_H
