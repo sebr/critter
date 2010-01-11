@@ -162,7 +162,6 @@ void Critter::parseOptions() {
     }
 
     if (readFromStdIn) {
-        debug() << "Reading from stdin...";
         readStdIn(review);
     }
 
