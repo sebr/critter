@@ -31,6 +31,7 @@
 #include "Settings.h"
 
 #include <QApplication>
+#include <QDebug>
 
 Settings::Settings(QObject *parent)
     : QObject(parent)
@@ -53,6 +54,7 @@ void Settings::saveSettings() const {
     m_settings->setValue("username", m_username);
     m_settings->setValue("password", m_password);
     m_settings->endGroup();
+    m_settings->sync();
 }
 
 
