@@ -40,10 +40,14 @@ class FishEyeChangesetCommunicator : public RestCommunicator
     public:
         FishEyeChangesetCommunicator(QObject *parent) : RestCommunicator(parent) {}
 
+        void setRepository(const QString &repo) { m_repo = repo; }
+
     protected:
         virtual QUrl apiUrl(const QString &path = QString()) const {
-            return QUrl(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/" + path);
+            return QUrl(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/changeset/" + m_repo + "/" + path);
         }
+
+        QString m_repo;
 };
 
 class ProjectsCommunicator : public RestCommunicator
