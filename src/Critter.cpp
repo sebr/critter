@@ -309,7 +309,7 @@ void Critter::configureCritter() {
 
 QString Critter::getInput(const QString &text, const QString &existing) const {
     cout << qPrintable(text);
-    if (!existing.isEmpty()) {
+    if (false && !existing.isEmpty()) {
         cout << " [" << qPrintable(existing) << "]";
     }
     cout << ": ";
