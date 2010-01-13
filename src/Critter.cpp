@@ -78,6 +78,28 @@ void Critter::parseOptions() {
     bool readFromStdIn = true;
     const bool isCreateReview = m_vm.count("create");
     const bool isUpdateReview = m_vm.count("update");
+    const bool setPrefs = m_vm.count("configure");
+
+    const bool showUsage = m_vm.count("help");
+
+    if (showUsage) {
+        showHelp();
+        qApp->quit();
+        return;
+    }
+
+    // Check invalid arg combos
+    if (isCreateReview && isUpdateReview) {
+        error() << "Create review and update review arguments are mutually exclusive. Please try harder next time.";
+    } else if (!isCreateReview && !isUpdateReview && !setPrefs) {
+        error() << "Critter doesn't know what to do. Please try the --help argument";
+    }
+
+    if (setPrefs) {
+        configureCritter();
+        qApp->quit();
+        return;
+    }
 
     if (m_vm.count("server")) {
         QString overrideServer = QString::fromStdString(m_vm["server"].as<string>());
@@ -192,7 +214,8 @@ po::options_description Critter::options() {
 
     po::options_description config("Crucible options");
     config.add_options()
-        ("server,S", po::value<string>(), "crucible server")
+        ("server", po::value<string>(), "crucible server")
+        ("configure", "set crucible server configuration")
         ;
 
     po::options_description review("Review options");
@@ -236,7 +259,7 @@ QByteArray Critter::loadPatch(const QString &filename) const
 }
 
 void Critter::readStdIn(Review *review) {
-    std::string input_line;
+    string input_line;
 
     QByteArray ba;
 
@@ -244,7 +267,7 @@ void Critter::readStdIn(Review *review) {
     QString commitRevision;
     bool firstLine = true;
 
-    while (!std::getline(std::cin, input_line).eof()) {
+    while (!getline(cin, input_line).eof()) {
         const QString s = QString::fromStdString(input_line);
         if (firstLine) {
             if (s.startsWith("diff") || s.startsWith("Index:")) {
@@ -264,4 +287,20 @@ void Critter::readStdIn(Review *review) {
     } else if (!commitRevision.isEmpty()) {
         review->addChangeset(commitRevision);
     }
+}
+
+void Critter::configureCritter() {
+    const QString server = getInput("Server address: ");
+    const QString username = getInput("Username: ");
+    const QString password = getInput("Password: ");
+}
+
+QString Critter::getInput(const QString &text) const {
+    cout << qPrintable(text);
+    QString input;
+    int c;
+    while ((c = getchar()) != '\n') {
+        input.append(c);
+    }
+    return input;
 }

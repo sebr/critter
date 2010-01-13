@@ -64,6 +64,8 @@ class Critter : public QObject
         QByteArray loadPatch(const QString &filename) const;
         void readStdIn(Review *review);
         void testConnection();
+        void configureCritter();
+        QString getInput(const QString &text) const;
 
         CrucibleConnector *m_crucibleConnector;
         po::variables_map m_vm;

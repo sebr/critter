@@ -61,17 +61,6 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    const bool isCreateReview = vm.count("create");
-    const bool isUpdateReview = vm.count("update");
-    const bool showHelp = vm.count("help") ||
-                          (isCreateReview && isUpdateReview) ||
-                          (!isCreateReview && !isUpdateReview);
-
-    if (showHelp) {
-        std::cout << options << "\n";
-        a.exit(1);
-        return 1;
-    }
 
 //    bool showGui = false;
 //    if (showGui) {
@@ -82,10 +71,10 @@ int main(int argc, char *argv[])
 //        }
 //        w->show();
 //    } else {
-        Critter *critter = new Critter();
-        critter->setOptions(vm);
-        critter->exec();
-//    }
+
+    Critter *critter = new Critter();
+    critter->setOptions(vm);
+    critter->exec();
 
     return a.exec();
 }
