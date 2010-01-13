@@ -52,9 +52,9 @@ bool Debug::enabled = false;
 Critter::Critter(QObject *parent)
     : QObject(parent)
     , m_crucibleConnector(0)
+    , m_settings(new Settings(this))
 {
-    Settings *settings = new Settings(this);
-    m_crucibleConnector = new CrucibleConnector(settings, this);
+    m_crucibleConnector = new CrucibleConnector(m_settings, this);
 }
 
 void Critter::setOptions(po::variables_map vm) {

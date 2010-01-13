@@ -39,6 +39,7 @@ namespace po = boost::program_options;
 
 class CrucibleConnector;
 class Review;
+class Settings;
 
 class Critter : public QObject
 {
@@ -68,6 +69,7 @@ class Critter : public QObject
         QString getInput(const QString &text) const;
 
         CrucibleConnector *m_crucibleConnector;
+        Settings *m_settings;
         po::variables_map m_vm;
 };
 
