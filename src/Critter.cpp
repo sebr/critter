@@ -182,8 +182,6 @@ QByteArray Critter::loadPatch(const QString &filename) const
 {
     QFileInfo fi(QDir::current(), filename);
 
-//      debug() << "loading patch data from" << fi.filePath();
-
     QFile patch(fi.filePath());
 
     bool open = patch.open(QIODevice::ReadOnly);
@@ -196,7 +194,6 @@ QByteArray Critter::loadPatch(const QString &filename) const
 }
 
 void Critter::readStdIn(Review *review) {
-    debug() << "reading from stdin";
     std::string input_line;
 
     QByteArray ba;
@@ -207,7 +204,6 @@ void Critter::readStdIn(Review *review) {
 
     while (!std::getline(std::cin, input_line).eof()) {
         const QString s = QString::fromStdString(input_line);
-        debug() << "   (read)" << s;
         if (firstLine) {
             if (s.startsWith("diff") || s.startsWith("Index:")) {
                 isPatch = true;
@@ -226,7 +222,6 @@ void Critter::readStdIn(Review *review) {
     }
 
     if (!commitRevision.isEmpty()) {
-        debug() << "   (found)" << commitRevision;
         review->addChangeset(commitRevision);
     }
 }
