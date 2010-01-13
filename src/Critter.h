@@ -60,6 +60,7 @@ class Critter : public QObject
 
     private slots:
         void parseOptions();
+        void quit();
 
     private:
         QByteArray loadPatch(const QString &filename) const;

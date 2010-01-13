@@ -31,6 +31,7 @@
 #include "SynchronousJobDispatcher.h"
 
 #include "../actions/AbstractAction.h"
+#include "../../Debug.h"
 
 SynchronousJobDispatcher::SynchronousJobDispatcher(QQueue<AbstractAction*> actions, QObject *parent)
     : QObject(parent)
@@ -43,6 +44,7 @@ void SynchronousJobDispatcher::execute() {
     if (lastAction) {
         disconnect(lastAction, SIGNAL(executed()), this, SLOT(execute()));
         if (!lastAction->successful()) {
+            debug() << "Action" << lastAction->metaObject()->className() << "did not succeed";
             m_actions.clear();
             emit finished();
             return;
@@ -56,5 +58,8 @@ void SynchronousJobDispatcher::execute() {
 
     AbstractAction *action = m_actions.dequeue();
     connect(action, SIGNAL(executed()), this, SLOT(execute()));
+
+    debug() << "Running action" << action->metaObject()->className();
+
     action->run();
 }

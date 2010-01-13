@@ -28,6 +28,7 @@
  **
  ****************************************************************************/
 
+#include "../Debug.h"
 #include "Review.h"
 
 #include <QXmlStreamWriter>
@@ -35,6 +36,7 @@
 Review::Review(QObject *parent)
     : QObject(parent)
     , m_allowReviewersToJoin(true)
+    , m_shouldStart(false)
 {
 }
 
@@ -73,6 +75,8 @@ QByteArray Review::createData() const {
 
     xml.writeEndElement(); // createReview
     xml.writeEndDocument();
+
+    debug() << "XML" << ba;
 
     return ba;
 }

@@ -51,6 +51,7 @@ CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
 }
 
 void CrucibleConnector::createReview() {
+    debug() << "createReview()";
     updateReviewContent(true);
 }
 
@@ -98,6 +99,7 @@ FishEyeChangesetCommunicator* CrucibleConnector::createFishEyeCommunicator() {
     fisheyeCommunicator->setServer(server());
     fisheyeCommunicator->setUser(user());
     fisheyeCommunicator->setPassword(password());
+    fisheyeCommunicator->setRepository(m_review->repository());
     return fisheyeCommunicator;
 }
 
