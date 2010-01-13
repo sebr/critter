@@ -219,9 +219,7 @@ void Critter::readStdIn(Review *review) {
 
     if (isPatch) {
         review->addPatch(ba);
-    }
-
-    if (!commitRevision.isEmpty()) {
+    } else if (!commitRevision.isEmpty()) {
         review->addChangeset(commitRevision);
     }
 }
