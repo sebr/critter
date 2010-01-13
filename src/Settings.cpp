@@ -31,6 +31,7 @@
 #include "Settings.h"
 
 #include <QApplication>
+#include <QUrl>
 
 Settings::Settings(QObject *parent)
     : QObject(parent)
@@ -53,7 +54,11 @@ void Settings::saveSettings() const {
     m_settings->setValue("username", m_username);
     m_settings->setValue("password", m_password);
     m_settings->endGroup();
+    m_settings->sync();
 }
 
-
+bool Settings::validateServer(const QString &server) const {
+    QUrl u(server);
+    return u.isValid();
+}
 

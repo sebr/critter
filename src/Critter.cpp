@@ -290,13 +290,30 @@ void Critter::readStdIn(Review *review) {
 }
 
 void Critter::configureCritter() {
-    const QString server = getInput("Server address: ");
-    const QString username = getInput("Username: ");
-    const QString password = getInput("Password: ");
+    QString server = getInput("Server address", m_settings->server());
+    while (!m_settings->validateServer(server)) {
+        debug() << "URL is invalid, please try again";
+        server = getInput("Server address", m_settings->server());
+    }
+    m_settings->setServer(server);
+
+    const QString username = getInput("Username", m_settings->username());
+    m_settings->setUsername(username);
+    
+    const QString password = getInput("Password");
+    m_settings->setPassword(password);
+    
+    m_settings->saveSettings();
+    debug() << "Settings saved";
 }
 
-QString Critter::getInput(const QString &text) const {
+QString Critter::getInput(const QString &text, const QString &existing) const {
     cout << qPrintable(text);
+    if (!existing.isEmpty()) {
+        cout << " [" << qPrintable(existing) << "]";
+    }
+    cout << ": ";
+
     QString input;
     int c;
     while ((c = getchar()) != '\n') {

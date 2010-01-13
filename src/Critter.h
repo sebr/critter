@@ -66,7 +66,7 @@ class Critter : public QObject
         void readStdIn(Review *review);
         void testConnection();
         void configureCritter();
-        QString getInput(const QString &text) const;
+        QString getInput(const QString &text, const QString &existing = QString()) const;
 
         CrucibleConnector *m_crucibleConnector;
         Settings *m_settings;
