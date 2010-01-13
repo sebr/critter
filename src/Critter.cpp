@@ -291,7 +291,7 @@ void Critter::readStdIn(Review *review) {
 
 void Critter::configureCritter() {
     QString server = getInput("Server address", m_settings->server());
-    while (!m_settings->validateServer(server)) {
+    while (!m_settings->validateServerAndSet(server)) {
         debug() << "URL is invalid, please try again";
         server = getInput("Server address", m_settings->server());
     }

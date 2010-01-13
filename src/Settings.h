@@ -45,7 +45,7 @@ class Settings : public QObject
         void setServer(const QString &server) { m_server = server; }
         void setUsername(const QString &username) { m_username = username; }
         void setPassword(const QString &password) { m_password = password; }
-        bool validateServer(const QString &server) const;
+        bool validateServerAndSet(QString &server);
 
         QString server() const { return m_server; }
         QString username() const { return m_username; }

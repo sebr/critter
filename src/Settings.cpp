@@ -57,8 +57,19 @@ void Settings::saveSettings() const {
     m_settings->sync();
 }
 
-bool Settings::validateServer(const QString &server) const {
-    QUrl u(server);
-    return u.isValid();
+bool Settings::validateServerAndSet(QString &server) {
+    if (server.isEmpty()) {
+        return false;
+    }
+
+    if (!server.startsWith("http://") && !server.startsWith("https://")) {
+        server.prepend("http://");
+    }
+    QUrl u(server, QUrl::StrictMode);
+    if (u.isValid()) {
+        setServer(u.toString());
+        return true;
+    }
+    return false;
 }
 
