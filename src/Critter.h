@@ -48,6 +48,9 @@ class Critter : public QObject
         Critter(QObject *parent = 0);
         void setOptions(po::variables_map vm);
 
+        po::options_description static options();
+        void static showHelp();
+
     signals:
         void finished();
 

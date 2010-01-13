@@ -173,6 +173,48 @@ void Critter::parseOptions() {
     connect(m_crucibleConnector, SIGNAL(finished()), qApp, SLOT(quit()));
 }
 
+void Critter::showHelp() {
+    std::cout << options();
+}
+
+po::options_description Critter::options() {
+    po::options_description generic("General options");
+    generic.add_options()
+        ("help", "produces this help message")
+        ("debug,d", "enable debug output")
+        ;
+
+    po::options_description main("Mandatory options - one of the following options must be provided");
+    main.add_options()
+        ("create,c", "create a review")
+        ("update,u", po::value<string>(), "review to update")
+        ;
+
+    po::options_description config("Crucible options");
+    config.add_options()
+        ("server,S", po::value<string>(), "crucible server")
+        ;
+
+    po::options_description review("Review options");
+    review.add_options()
+        ("start,s", "start the review")
+        ("title", po::value<string>(), "the review title")
+        ("objectives", po::value<string>(), "the review objectives")
+        ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
+        ("patch", po::value<string>(), "patch to upload to the specified review")
+        ("author", po::value<string>(), "when creating, the author of the review")
+        ("creator", po::value<string>(), "when creating, the creator of the review (if not set, defaults to author)")
+        ("moderator", po::value<string>(), "when creating, the moderator of the review (if not set, defaults to author)")
+        ("project", po::value<string>(), "when creating, the project to add the review to (if not set, defaults to \"CR\")")
+        ("repository", po::value<string>(), "the repository for changesets")
+        ("reviewers", po::value< vector<string> >()->multitoken(), "list of reviewers for the review")
+        ;
+
+    generic.add(main).add(config).add(review);
+
+    return generic;
+}
+
 void Critter::testConnection() {
     DEBUG_NOTIMPLEMENTED
 //    m_crucibleConnector->testConnection();
