@@ -50,9 +50,9 @@ class AbstractAction : public QObject
     signals:
         void executed();
 
-    private slots:
-        void callFailedSlot(QNetworkReply *reply);
-        void callSuccessfulSlot(QNetworkReply *reply);
+    protected slots:
+        virtual void callFailedSlot(QNetworkReply *reply);
+        virtual void callSuccessfulSlot(QNetworkReply *reply);
 
     protected:
         virtual void init();

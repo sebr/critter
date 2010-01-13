@@ -48,6 +48,10 @@ class FishEyeChangesetWaitingAction : public AbstractAction
     signals:
         void changesetFound();
 
+    protected slots:
+        virtual void callFailedSlot(QNetworkReply *reply);
+        void tryAgain();
+
     protected:
         virtual void callFailed(QNetworkReply *reply);
         virtual void callSuccessful(QNetworkReply *reply);

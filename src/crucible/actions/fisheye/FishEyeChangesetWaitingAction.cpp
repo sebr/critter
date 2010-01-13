@@ -35,6 +35,7 @@
 
 #include <QNetworkReply>
 #include <QDomDocument>
+#include <QTimer>
 
 FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(Review *review, RestCommunicator *communicator, QObject *parent)
     : AbstractAction(communicator, parent)
@@ -46,17 +47,26 @@ FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(Review *review, Res
 
 void FishEyeChangesetWaitingAction::run() {
     // TODO get all of the changesets
-    m_attempts++;
     const QString cId = m_changesets.first();
     m_communicator->get(m_repository + "/" + cId);
 }
 
+void FishEyeChangesetWaitingAction::tryAgain() {
+    m_attempts++;
+    run();
+}
+
+void FishEyeChangesetWaitingAction::callFailedSlot(QNetworkReply *reply) {
+    m_successful = false;
+    callFailed(reply);
+}
+
 void FishEyeChangesetWaitingAction::callFailed(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::ContentNotFoundError && m_attempts < MAX_ATTEMPTS) {
-        debug() << "Couldn't find changeset, waiting...";
-        run(); // try and try again.
+        QTimer::singleShot(1000, this, SLOT(tryAgain()));
     } else {
         debug() << "Could not find changeset at " << m_communicator->server().toString() << ":" << reply->errorString();
+        emit executed();
     }
 }
 
@@ -64,8 +74,6 @@ void FishEyeChangesetWaitingAction::callSuccessful(QNetworkReply *reply) {
     if (!reply->bytesAvailable()) {
         return;
     }
-
-    debug() << "Changeset found!";
 
     QByteArray data;
     while (reply->bytesAvailable()) {
