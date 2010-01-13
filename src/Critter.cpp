@@ -170,7 +170,12 @@ void Critter::parseOptions() {
     } else if (isUpdateReview) {
         m_crucibleConnector->updateReview();
     }
-    connect(m_crucibleConnector, SIGNAL(finished()), qApp, SLOT(quit()));
+    connect(m_crucibleConnector, SIGNAL(finished()), this, SLOT(quit()));
+}
+
+void Critter::quit() {
+    debug() << "Connector requested quit";
+    qApp->quit();
 }
 
 void Critter::testConnection() {
@@ -196,6 +201,8 @@ QByteArray Critter::loadPatch(const QString &filename) const
 }
 
 void Critter::readStdIn(Review *review) {
+    debug() << "Reading from stdin";
+
     std::string input_line;
 
     QByteArray ba;
@@ -205,7 +212,8 @@ void Critter::readStdIn(Review *review) {
     bool firstLine = true;
 
     while (!std::getline(std::cin, input_line).eof()) {
-        const QString s = QString::fromStdString(input_line) + "\n";
+        const QString s = QString::fromStdString(input_line);
+        debug() << "   (read)  " << s;
         if (firstLine) {
             if (s.startsWith("diff") || s.startsWith("Index:")) {
                 isPatch = true;
@@ -224,6 +232,7 @@ void Critter::readStdIn(Review *review) {
     }
 
     if (!commitRevision.isEmpty()) {
+        debug() << "   (found) " << commitRevision;
         review->addChangeset(commitRevision);
     }
 }

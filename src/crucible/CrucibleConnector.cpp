@@ -51,6 +51,7 @@ CrucibleConnector::CrucibleConnector(Settings *settings, QObject *parent)
 }
 
 void CrucibleConnector::createReview() {
+    debug() << "createReview()";
     updateReviewContent(true);
 }
 

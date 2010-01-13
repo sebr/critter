@@ -36,6 +36,7 @@
 #include <QNetworkReply>
 
 void CreateReviewAction::run() {
+    debug() << "Creating review...";
     m_communicator->postData(QString(), m_review->createData());
 }
 

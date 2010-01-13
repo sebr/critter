@@ -48,14 +48,12 @@ class Critter : public QObject
         Critter(QObject *parent = 0);
         void setOptions(po::variables_map vm);
 
-    signals:
-        void finished();
-
     public slots:
         void exec();
 
     private slots:
         void parseOptions();
+        void quit();
 
     private:
         QByteArray loadPatch(const QString &filename) const;
