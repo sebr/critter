@@ -35,6 +35,7 @@
 Review::Review(QObject *parent)
     : QObject(parent)
     , m_allowReviewersToJoin(true)
+    , m_shouldStart(false)
 {
 }
 

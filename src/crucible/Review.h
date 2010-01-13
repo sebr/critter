@@ -96,8 +96,8 @@ class Review : public QObject
 
         QString m_name;
         QString m_description;
-        bool    m_allowReviewersToJoin = true;
-        bool    m_shouldStart = false;
+        bool    m_allowReviewersToJoin;
+        bool    m_shouldStart;
 
         QString m_author;
         QString m_moderator;
