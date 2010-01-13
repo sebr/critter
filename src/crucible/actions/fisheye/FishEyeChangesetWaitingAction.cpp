@@ -29,27 +29,31 @@
  ****************************************************************************/
 
 #include "FishEyeChangesetWaitingAction.h"
+#include "../../Review.h"
 #include "../../rest/RestCommunicator.h"
 #include "../../../Debug.h"
 
 #include <QNetworkReply>
 #include <QDomDocument>
 
-FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(QStringList changesets, RestCommunicator *communicator, QObject *parent)
+FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(Review *review, RestCommunicator *communicator, QObject *parent)
     : AbstractAction(communicator, parent)
-    , m_changesets(changesets)
+    , m_changesets(review->changesets())
+    , m_repository(review->repository())
     , m_attempts(0)
 {
 }
 
 void FishEyeChangesetWaitingAction::run() {
-    m_attempts++;
     // TODO get all of the changesets
-    m_communicator->get(m_changesets.first());
+    m_attempts++;
+    const QString cId = m_changesets.first();
+    m_communicator->get(m_repository + "/" + cId);
 }
 
 void FishEyeChangesetWaitingAction::callFailed(QNetworkReply *reply) {
     if (reply->error() == QNetworkReply::ContentNotFoundError && m_attempts < MAX_ATTEMPTS) {
+        debug() << "Couldn't find changeset, waiting...";
         run(); // try and try again.
     } else {
         debug() << "Could not find changeset at " << m_communicator->server().toString() << ":" << reply->errorString();

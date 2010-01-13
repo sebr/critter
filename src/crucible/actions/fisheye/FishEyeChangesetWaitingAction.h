@@ -34,6 +34,7 @@
 #include "../AbstractAction.h"
 #include <QStringList>
 
+class Review;
 class QNetworkReply;
 
 class FishEyeChangesetWaitingAction : public AbstractAction
@@ -41,7 +42,7 @@ class FishEyeChangesetWaitingAction : public AbstractAction
     Q_OBJECT
 
     public:
-        FishEyeChangesetWaitingAction(QStringList changesets, RestCommunicator *communicator, QObject *parent);
+        FishEyeChangesetWaitingAction(Review *review, RestCommunicator *communicator, QObject *parent);
         virtual void run();
 
     signals:
@@ -53,6 +54,7 @@ class FishEyeChangesetWaitingAction : public AbstractAction
 
         const static int MAX_ATTEMPTS = 10;
         QStringList m_changesets;
+        QString m_repository;
         int m_attempts;
 };
 

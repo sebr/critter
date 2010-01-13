@@ -68,7 +68,7 @@ void CrucibleConnector::updateReviewContent(bool createReview) {
     // If the review has changesets, make sure that FishEye knows about them before creating the review
     // otherwise we could end up with empty reviews.
     if (m_review->hasChangesets()) {
-        actions.enqueue(new FishEyeChangesetWaitingAction(m_review->changesets(), createFishEyeCommunicator(), this));
+        actions.enqueue(new FishEyeChangesetWaitingAction(m_review, createFishEyeCommunicator(), this));
     }
 
     if (createReview) {
