@@ -42,7 +42,7 @@ class FishEyeChangesetCommunicator : public RestCommunicator
 
     protected:
         virtual QUrl apiUrl(const QString &path = QString()) const {
-            return QUrl(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/" + path);
+            return QUrl(m_server.toString(QUrl::StripTrailingSlash) + "/rest-service-fe/revisionData-v1/changeset/" + path);
         }
 };
 
