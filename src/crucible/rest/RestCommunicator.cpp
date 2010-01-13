@@ -96,11 +96,13 @@ void RestCommunicator::postTextData(const QString &path, const QString &data) {
 
 void RestCommunicator::postData(const QString &path, const QByteArray &data, const QString &contentType) {
     QNetworkRequest request = authenticatedRequest(path, contentType);
+    debug() << "POST: " << request.url();
     m_manager->post(request, data);
 }
 
 void RestCommunicator::get(const QString &path, const QString &contentType) {
     QNetworkRequest request = authenticatedRequest(path, contentType);
+    debug() << "GET: " << request.url();
     m_manager->get(request);
 }
 
