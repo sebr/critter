@@ -275,7 +275,7 @@ void Critter::readStdIn(Review *review) {
     while (!getline(cin, input_line).eof()) {
         const QString s = QString::fromStdString(input_line);
         // replay stdin so the user isn't left in the dark
-        cout << s << endl;
+        cout << qPrintable(s) << endl;
         if (firstLine) {
             if (s.startsWith("diff") || s.startsWith("Index:")) {
                 isPatch = true;
