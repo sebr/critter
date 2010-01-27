@@ -46,6 +46,8 @@ FishEyeChangesetWaitingAction::FishEyeChangesetWaitingAction(Review *review, Res
 }
 
 void FishEyeChangesetWaitingAction::run() {
+    debug() << "Waiting for FishEye to index " << (m_changesets.size() > 1 ? "changesets" : "changeset");
+
     // TODO get all of the changesets
     const QString cId = m_changesets.first();
     m_communicator->get(m_repository + "/" + cId);
