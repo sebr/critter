@@ -32,6 +32,7 @@
 #define CRITTER_H
 
 #include <QObject>
+#include <QByteArray>
 
 #include <boost/program_options.hpp>
 
@@ -63,7 +64,7 @@ class Critter : public QObject
         void quit();
 
     private:
-        QByteArray loadPatch(const QString &filename) const;
+        QByteArray loadFile(const QString &filename) const;
         void readStdIn(Review *review);
         void testConnection();
         void configureCritter();

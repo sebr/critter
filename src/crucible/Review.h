@@ -31,6 +31,7 @@
 #ifndef REVIEW_H
 #define REVIEW_H
 
+#include <QByteArray>
 #include <QObject>
 #include <QStringList>
 
@@ -90,6 +91,16 @@ class Review : public QObject
         void addUpload(const QByteArray &data) { m_uploads << data; }
         bool hasUploads() const { return !m_uploads.isEmpty(); }
 
+        QByteArray snippetData() const { return m_snippetData; }
+        void setSnippetData(const QByteArray &data) { m_snippetData = data; }
+
+        QString snippetFilename() const { return m_snippetFilename; }
+        void setSnippetFilename(const QString &name) { m_snippetFilename = name; }
+
+        bool isSnippet() const { return m_isSnippet; }
+        void setSnippet(const bool s) { m_isSnippet = s; }
+
+
     private:
         QString m_id;
         QString m_project;
@@ -108,6 +119,10 @@ class Review : public QObject
         QStringList       m_changesets;
         QList<QByteArray> m_patches;
         QList<QByteArray> m_uploads;
+
+        bool              m_isSnippet;
+        QString           m_snippetFilename;
+        QByteArray        m_snippetData;
 };
 
 #endif // REVIEW_H

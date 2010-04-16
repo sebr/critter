@@ -73,10 +73,16 @@ QByteArray Review::createData() const {
 
     xml.writeEndElement(); // reviewData
 
+    if (m_isSnippet) {
+        xml.writeStartElement("snippet");
+        xml.writeCDATA(m_snippetData);
+        xml.writeEndElement();
+
+        xml.writeTextElement("snippetFilename", m_snippetFilename);
+    }
+
     xml.writeEndElement(); // createReview
     xml.writeEndDocument();
-
-    debug() << "XML" << ba;
 
     return ba;
 }

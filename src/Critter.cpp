@@ -109,6 +109,10 @@ void Critter::parseOptions() {
 
     Review *review = new Review(this);
 
+    if (m_vm.count("snippet")) {
+        review->setSnippet(true);
+    }
+
     if (isCreateReview) {
         QString author = m_crucibleConnector->user();
         if (m_vm.count("author")) {
@@ -141,7 +145,7 @@ void Critter::parseOptions() {
         review->setProject("CR");
     }
 
-    if (m_vm.count("start")) {
+    if (!review->isSnippet() && m_vm.count("start")) {
         review->setShouldStart(true);
     }
 
@@ -149,24 +153,24 @@ void Critter::parseOptions() {
         const QString creator = QString::fromStdString(m_vm["creator"].as<string>());
         review->setCreator(creator);
     }
-    if (m_vm.count("moderator")) {
+    if (!review->isSnippet() && m_vm.count("moderator")) {
         const QString &moderator = QString::fromStdString(m_vm["moderator"].as<string>());
         review->setModerator(moderator);
     }
 
-    if (m_vm.count("reviewers")) {
+    if (!review->isSnippet() && m_vm.count("reviewers")) {
         const QVector<string> reviewers = QVector<string>::fromStdVector(m_vm["reviewers"].as< vector<string> >());
         foreach(string rev, reviewers) {
             review->addReviewer(QString::fromStdString(rev));
         }
     }
     
-    if (m_vm.count("repository")) {
+    if (!review->isSnippet() && m_vm.count("repository")) {
         const QString repo = QString::fromStdString(m_vm["repository"].as<string>());
         review->setRepository(repo);
     }
 
-    if (m_vm.count("changeset")) {
+    if (!review->isSnippet() && m_vm.count("changeset")) {
         readFromStdIn = false;
         const QVector<string> changesets = QVector<string>::fromStdVector(m_vm["changeset"].as< vector<string> >());
         foreach(string cs, changesets) {
@@ -174,12 +178,23 @@ void Critter::parseOptions() {
         }
     }
 
-    if (m_vm.count("patch")) {
+    if (!review->isSnippet() && m_vm.count("patch")) {
         readFromStdIn = false;
         const QString &patchFile = QString::fromStdString(m_vm["patch"].as<string>());
-        QByteArray patchData = loadPatch(patchFile);
+        QByteArray patchData = loadFile(patchFile);
         if (!patchData.isEmpty()) {
             review->addPatch(patchData);
+        }
+    }
+
+    if (review->isSnippet() && m_vm.count("snippetFile")) {
+        readFromStdIn = false;
+        const QString &snippetFile = QString::fromStdString(m_vm["snippetFile"].as<string>());
+        debug() << "Loading snippet" << snippetFile;
+        QByteArray snippetData = loadFile(snippetFile);
+        if (!snippetData.isEmpty()) {
+            review->setSnippetData(snippetData);
+            review->setSnippetFilename(snippetFile);
         }
     }
 
@@ -226,6 +241,8 @@ po::options_description Critter::options() {
     po::options_description review("Review options");
     review.add_options()
         ("start,s", "start the review")
+        ("snippet", "create a snippet")
+        ("snippetFile", po::value<string>(), "snippet data")
         ("title", po::value<string>(), "the review title")
         ("objectives", po::value<string>(), "the review objectives")
         ("changeset", po::value< vector<string> >()->multitoken(), "create a review from the specified changeset ids")
@@ -248,7 +265,7 @@ void Critter::testConnection() {
 //    m_crucibleConnector->testConnection();
 }
 
-QByteArray Critter::loadPatch(const QString &filename) const
+QByteArray Critter::loadFile(const QString &filename) const
 {
     QFileInfo fi(QDir::current(), filename);
 
@@ -289,7 +306,9 @@ void Critter::readStdIn(Review *review) {
         ba.append(s);
     }
 
-    if (isPatch) {
+    if (review->isSnippet()) {
+        review->setSnippetData(ba);
+    } else if (isPatch) {
         review->addPatch(ba);
     } else if (!commitRevision.isEmpty()) {
         review->addChangeset(commitRevision);
