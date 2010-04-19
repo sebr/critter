@@ -91,8 +91,12 @@ void Critter::parseOptions() {
     // Check invalid arg combos
     if (isCreateReview && isUpdateReview) {
         error() << "Create review and update review arguments are mutually exclusive. Please try harder next time.";
+        qApp->quit();
+        return;
     } else if (!isCreateReview && !isUpdateReview && !setPrefs) {
         error() << "Critter doesn't know what to do. Please try the --help argument";
+        qApp->quit();
+        return;
     }
 
     if (setPrefs) {
