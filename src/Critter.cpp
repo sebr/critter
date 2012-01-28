@@ -168,7 +168,7 @@ void Critter::parseOptions() {
             review->addReviewer(QString::fromStdString(rev));
         }
     }
-    
+
     if (!review->isSnippet() && m_vm.count("repository")) {
         const QString repo = QString::fromStdString(m_vm["repository"].as<string>());
         review->setRepository(repo);
@@ -329,10 +329,10 @@ void Critter::configureCritter() {
 
     const QString username = getInput("Username", m_settings->username());
     m_settings->setUsername(username);
-    
+
     const QString password = getInput("Password");
     m_settings->setPassword(password);
-    
+
     m_settings->saveSettings();
     debug() << "Settings saved";
 }
